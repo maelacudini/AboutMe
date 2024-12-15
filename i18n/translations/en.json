@@ -1,0 +1,11 @@
+{
+    "home": {
+        "hero_title": "Ready to cook?"
+    },
+    "profile": {
+        "hero_title": "Welcome back, Chef!"
+    },
+    "discover": {
+        "hero_title": "Discover the World throught food."
+    }
+}
