@@ -1,5 +1,5 @@
 "use client"
-import { cn } from "@/utils/fn"
+import { cn } from "@/utils/functions"
 import {
   Check, ChevronRight, Circle 
 } from "lucide-react"
@@ -23,7 +23,7 @@ const Menubar = React.forwardRef<
   <MenubarPrimitive.Root
     ref={ref}
     className={cn(
-      "flex h-9 items-center space-x-1 rounded-md border bg-background p-1 shadow-sm w-fit",
+      "flex items-center space-x-1 rounded-md border bg-background p-1 shadow-sm h-9 w-fit",
       className
     )}
     {...props}

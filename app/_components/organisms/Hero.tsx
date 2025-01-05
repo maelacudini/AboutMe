@@ -7,11 +7,10 @@ export interface HeroPropsType {
 const Hero = (props: HeroPropsType) => {
   const { title } = props
 
-
   return (
-    <div className="h-[80lvh] w-full flex items-end">
-      <Heading size="text-7xl" tag="h1">{title}</Heading>
-    </div>
+    <section className="h-[80lvh] w-full flex items-end">
+      <Heading size="text-8xl" tag="h1">{title}</Heading>
+    </section>
   )
 }
 

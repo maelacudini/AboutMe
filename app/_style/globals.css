@@ -60,12 +60,15 @@
 @layer base {
   * {
     @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
   }
 
-  img {
-    border-radius: 1rem;
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 }

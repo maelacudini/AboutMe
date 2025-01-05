@@ -1,11 +1,40 @@
 {
+    "navigation": {
+        "home": "HOME",
+        "login": "LOGIN",
+        "signup": "ISCRIVITI",
+        "profile": "PROFILO",
+        "logout": "LOGOUT"
+    },
+    "forms": {
+        "login": {
+            "form_title": "Che bello rivederti!",
+            "form_redirect": {
+                "question": "Non hai un account?",
+                "link": "Iscriviti!"
+            }
+        },
+        "signup": {
+            "form_title": "Un nuovo utente, yay!",
+            "form_redirect": {
+                "question": "Hai già un account?",
+                "link": "Vai al login!"
+            }
+        },
+        "form_buttons": {
+            "submit": "Invia",
+            "reset": "Cancella"
+        }
+    },
     "home": {
-        "hero_title": "Pronti a cucinare?"
+        "hero_title": "Scopri la nostra clique"
+    },
+    "user": {
+        "hero_title": "A proposito di {name}"
     },
     "profile": {
-        "hero_title": "Bentornato, Chef!"
-    },
-    "discover": {
-        "hero_title": "Scopri il Mondo attraverso il cibo."
+        "no_user": "Nessun user trovato.",
+        "hero_title": "Hey, {name}!",
+        "edit": "Modifica qua il tuo profilo."
     }
 }

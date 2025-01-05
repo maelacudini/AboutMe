@@ -56,7 +56,7 @@
     ],
     "max-depth": [
       2,
-      2
+      3
     ],
     "max-params": [
       2,
@@ -64,7 +64,7 @@
     ],
     "complexity": [
       2,
-      6
+      10
     ],
     "max-lines": [
       2,
@@ -98,7 +98,7 @@
     ],
     "linebreak-style": [
       2,
-      "unix"
+      "windows"
     ],
     "padding-line-between-statements": [
       2,

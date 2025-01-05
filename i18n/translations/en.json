@@ -1,11 +1,40 @@
 {
+    "navigation": {
+        "home": "HOME",
+        "login": "LOGIN",
+        "signup": "SIGNUP",
+        "profile": "PROFILE",
+        "logout": "LOGOUT"
+    },
+    "forms": {
+        "login": {
+            "form_title": "Nice to see you again!",
+            "form_redirect": {
+                "question": "Don't have an account?",
+                "link": "Signup here!"
+            }
+        },
+        "signup": {
+            "form_title": "New member, yay!",
+            "form_redirect": {
+                "question": "Already have an account?",
+                "link": "Login here!"
+            }
+        },
+        "form_buttons": {
+            "submit": "Submit",
+            "reset": "Reset"
+        }
+    },
     "home": {
-        "hero_title": "Ready to cook?"
+        "hero_title": "About our clique"
+    },
+    "user": {
+        "hero_title": "About {name}"
     },
     "profile": {
-        "hero_title": "Welcome back, Chef!"
-    },
-    "discover": {
-        "hero_title": "Discover the World throught food."
+        "no_user": "No user found.",
+        "hero_title": "Hello, {name}!",
+        "edit": "Edit your profile info here."
     }
 }

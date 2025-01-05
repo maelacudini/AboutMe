@@ -10,12 +10,12 @@ import {
 import {
   Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList 
 } from "../shadcn/command"
-import { cn } from "@/utils/fn"
+import { cn } from "@/utils/functions"
 import { Button } from "../shadcn/button"
 
 export type ComboboxData = {
-    value: string,
-    label: string
+  value: string,
+  label: string
 }
 
 export type ComboboxPropsType = ComboboxData[]

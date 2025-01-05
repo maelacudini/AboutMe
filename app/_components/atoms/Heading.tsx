@@ -1,4 +1,4 @@
-import { cn } from "@/utils/fn"
+import { cn } from "@/utils/functions"
 import {
   HTMLAttributes, ReactNode 
 } from "react"

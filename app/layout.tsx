@@ -1,8 +1,7 @@
 import './_style/globals.css';
-import Footer from './_components/molecules/Footer';
 // eslint-disable-next-line import/no-unresolved
 import { GeistSans } from "geist/font/sans";
-import Header from './_components/molecules/Header';
+import Header from './_components/organisms/Header';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { ReactNode } from 'react';
@@ -10,6 +9,8 @@ import { ThemeProvider } from '../context/ThemeProvider';
 import {
   getLocale, getMessages 
 } from 'next-intl/server';
+import { AuthProvider } from '@/context/AuthProvider';
+import { Toaster } from './_components/shadcn/sonner';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -23,22 +24,25 @@ export default async function RootLayout({ children, }: Readonly<{
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning={true}>
       <body
-        className={`${GeistSans.className} antialiased`}
+        className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}
+        id='body'
       >
-        <NextIntlClientProvider messages={messages}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Header />
-            {children}
-            <Footer />
-          </ThemeProvider>
-        </NextIntlClientProvider>
+        <AuthProvider>
+          <NextIntlClientProvider messages={messages}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </NextIntlClientProvider>
+        </AuthProvider>
       </body>
     </html>
   );

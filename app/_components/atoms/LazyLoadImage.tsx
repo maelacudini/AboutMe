@@ -1,4 +1,4 @@
-import { generateBlurDataURL } from "@/utils/serverFn";
+import { generateBlurDataURL } from "@/utils/server/functions/images";
 import Image, { ImageProps } from "next/image"
 
 export interface LazyLoadImagePropsType extends ImageProps {}
