@@ -1,4 +1,5 @@
 import {
+  boolean,
   object, string 
 } from "zod"
  
@@ -26,8 +27,6 @@ export const signUpSchema = object({
 });
 
 export const updatePasswordSchema = object({
-  userId: string({ required_error: "User id is required" })
-    .min(1, "User id is required"),
   currentPassword: string({ required_error: "Current password is required" })
     .min(1, "Current password is required"),
   newPassword: string({ required_error: "New password is required" })
@@ -40,15 +39,25 @@ export const updatePasswordSchema = object({
 })
 
 export const updateUserDataSchema = object({
-  email: string()
+  email: string({ required_error: "Email is required" })
     .email("Invalid email")
-    .optional(),
-  username: string()
-    .optional(),
+    .min(1),
+  username: string({ required_error: "Username is required" }).min(1),
   bio: string()
     .max(400)
     .optional(),
   avatar: string()
     .url("Invalid url")
     .optional(),
+})
+
+export const socialSchema = object({
+  label: string({ required_error: "Label is required" })
+    .min(1, "Label is required"),
+  tag: string({ required_error: "Tag is required" })
+    .min(1, "Tag is required"),
+  url: string({ required_error: "Url is required" })
+    .min(1, "Url is required")
+    .url(),
+  isDeleted: boolean()
 })

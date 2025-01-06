@@ -16,21 +16,13 @@ const Profile = async () => {
         <Heading>No user found.</Heading>
       </Main>
     )
-  }  
-
-  const socials = [
-    { label: 'Test', tag: '@Test', url: 'hshshs' },
-    { label: 'Test', tag: '@Test', url: 'hshshs' },
-    { label: 'Test', tag: '@Test', url: 'hshshs' },
-    { label: 'Test', tag: '@Test', url: 'hshshs' },
-    { label: 'Test', tag: '@Test', url: 'hshshs' },
-  ]
+  }
 
   return (
     <Main>
       <Hero title={t('hero_title', { name: user.username })}/>
       <ProfileInfo user={user}/>
-      <ProfileSocials socials={socials}/>
+      <ProfileSocials socials={user.socials}/>
     </Main>
   )
 }

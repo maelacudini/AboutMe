@@ -40,6 +40,10 @@ const UserSchema = new Schema<UserInterface>(
           type: String,
           required: true,
         },
+        isDeleted: {
+          type: Boolean,
+          required: true,
+        },
       }
     ],
   },

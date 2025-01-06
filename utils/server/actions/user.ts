@@ -1,10 +1,8 @@
-/* eslint-disable complexity */
-/* eslint-disable no-undef */
 'use server'
 import connectMongoDB from "@/lib/mongo/DBConnection";
 import User from "@/lib/mongo/models/User";
 import {
-  signUpSchema, updatePasswordSchema 
+  signUpSchema, socialSchema, updatePasswordSchema 
 } from "@/lib/zod/ValidationSchemas";
 import xss from "xss";
 import { saltAndHashPassword } from "../functions/auth";
@@ -13,6 +11,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import bcrypt from "bcryptjs";
 import { revalidateTag } from "next/cache";
+import { SocialsInterface } from "@/app/api/auth/[...nextauth]/next-auth";
 
 // PUBLIC
 // POST, SIGN UP
@@ -26,15 +25,11 @@ export async function createUser(prevState: any, formData: FormData) {
   
     const { email, username, password } = rawFormData  
   
-    await signUpSchema.parseAsync({ email: email, username: username, password: password });
+    await signUpSchema.parseAsync(rawFormData)
 
-    if (!email || !password || !username) {
-      return { message: 'Please enter valid credentials' }
-    }
-
-    const sanitizedPassword = xss(password.toString())
-    const sanitizedEmail = xss(email.toString())
-    const sanitizedUsername = xss(username.toString())
+    const sanitizedPassword = xss(password!.toString())
+    const sanitizedEmail = xss(email!.toString())
+    const sanitizedUsername = xss(username!.toString())
 
     await connectMongoDB()
 
@@ -43,15 +38,15 @@ export async function createUser(prevState: any, formData: FormData) {
         { email: sanitizedEmail },
         { username: sanitizedUsername }
       ]
-    };    
+    }
 
-    const existingUser = await User.findOne(query);
+    const existingUser = await User.findOne(query)
    
     if (existingUser) {
       if (existingUser.email === sanitizedEmail) {
-        return { message: 'User already exists', timestamp: Date.now() };
+        return { status: 409, message: 'User already exists', timestamp: Date.now() };
       } else if (existingUser.username === sanitizedUsername) {
-        return { message: 'Username is already taken', timestamp: Date.now() };
+        return { status: 409, message: 'Username is already taken', timestamp: Date.now() };
       }
     }
 
@@ -63,16 +58,17 @@ export async function createUser(prevState: any, formData: FormData) {
       password: hashedPassword,
     })
 
-    revalidateTag('getUsersWithPaginationAndFilter')
-
-    return { message: 'User succesfully created', timestamp: Date.now() };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { message: error.message }
+      return { status: 400, message: error.message, timestamp: Date.now() };
     }
      
-    return { message: 'Could not signup' } 
+    return { status: 500, message: 'Could not signup', timestamp: Date.now() };
   } 
+
+  revalidateTag('getUsersWithPaginationAndFilter')
+
+  return { status: 200, message: 'User succesfully created', timestamp: Date.now() };
 }
 
 // PRIVATE
@@ -82,52 +78,46 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
     const session = await getServerSession(authOptions)
   
     if (!session) {
-      return { message: 'Unauthorized' }
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
     }
 
     const rawFormData = {
       currentPassword: formData.get('currentPassword'),
       newPassword: formData.get('newPassword'),
-      userId: formData.get('userId'),
     }
   
-    const { currentPassword, newPassword, userId } = rawFormData
+    const { currentPassword, newPassword } = rawFormData
 
-    await updatePasswordSchema.parseAsync({ userId, currentPassword, newPassword });
-
-    if (!currentPassword || !newPassword || !userId) {
-      return { message: 'Please make sure to fill in all required fields' }
-    }
+    await updatePasswordSchema.parseAsync(rawFormData)
   
-    const sanitizedCurrentPassword = xss(currentPassword.toString())
-    const sanitizedNewPassword = xss(newPassword.toString())
-    const sanitizedUserId = xss(userId.toString())
+    const sanitizedCurrentPassword = xss(currentPassword!.toString())
+    const sanitizedNewPassword = xss(newPassword!.toString())
 
     await connectMongoDB()
     
-    const user = await User.findById(sanitizedUserId)
+    const user = await User.findById(session.user.id)
 
     if (!user) {
-      return { message: 'No user found' }
+      return { status: 404, message: 'No user found', timestamp: Date.now() };
     }
 
     const match = await bcrypt.compare(sanitizedCurrentPassword, user.password);
 
     if (!match) {
-      return { message: 'Your current password does not match' }
+      return { status: 400, message: 'Your current password does not match', timestamp: Date.now() };
     }
 
     const hashedNewPassword = await bcrypt.hash(sanitizedNewPassword, 10)
 
-    await User.findByIdAndUpdate(sanitizedUserId, { password: hashedNewPassword }, { new: true })
+    await User.findByIdAndUpdate(session.user.id, { password: hashedNewPassword }, { new: true })
 
-    return { message: 'Your password has been successfully updated' }
+    return { status: 200, message: 'Your password has been successfully updated', timestamp: Date.now() };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { message: error.message }
+      return { status: 400, message: error.message, timestamp: Date.now() };
     }
      
-    return { message: 'Could not update password' } 
+    return { status: 500, message: 'Could not signup', timestamp: Date.now() };
   }
 }
 
@@ -138,7 +128,7 @@ export async function updateUserData(prevState: any, formData: FormData) {
     const session = await getServerSession(authOptions)
   
     if (!session) {
-      return { message: 'Unauthorized' }
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
     }
 
     const rawFormData = {
@@ -150,26 +140,31 @@ export async function updateUserData(prevState: any, formData: FormData) {
   
     const { email, username, bio, avatar } = rawFormData  
 
-    if (!session.user.id) {      
-      return { message: 'No valid user id', timestamp: Date.now() }
-    }
-
     const sanitizedData: Record<string, string> = {};
 
     if (email) {sanitizedData.email = xss(email.toString());}
     if (username) {sanitizedData.username = xss(username.toString());}
-    if (bio) {sanitizedData.bio = xss(bio.toString());}
-    if (avatar) {sanitizedData.avatar = xss(avatar.toString());}
+    if (bio) {
+      sanitizedData.bio = xss(bio.toString())
+    } else {
+      sanitizedData.bio = ''
+    }
+    if (avatar) {
+      sanitizedData.avatar = xss(avatar.toString())
+    } else {
+      sanitizedData.avatar = ''
+    }    
 
     await connectMongoDB()
 
-    // TODO: find out if email or username are already in use
+    // Exclude the current user from the query by adding the `user.id` to the condition
     const query = {
       $or: [
         { email: sanitizedData.email },
         { username: sanitizedData.username }
-      ]
-    };    
+      ],
+      _id: { $ne: session.user.id }
+    };
 
     const existingUser = await User.findOne(query);
    
@@ -188,57 +183,118 @@ export async function updateUserData(prevState: any, formData: FormData) {
     );
 
     if (!updatedUser) {
-      return { message: 'User not found', status: 404, timestamp: Date.now() };
+      return { status: 404, message: 'User not found', timestamp: Date.now() };
     }
-
-    revalidateTag('getUser')
-    revalidateTag('getUsersWithPaginationAndFilter')
     
-    return { message: 'user updated', timestamp: Date.now() }
   } catch (error) {
-    return { message: 'Could not update field', timestamp: Date.now() } 
+    return { status: 500, message: 'Could not update field', timestamp: Date.now() } 
   } 
+
+  revalidateTag('getUser')
+  revalidateTag('getUsersWithPaginationAndFilter')
+
+  return { status: 200, message: 'user updated', timestamp: Date.now() }
 }
 
 // PRIVATE
-// POST, UPDATE OR CREATE USER SOCIALS
-export async function updateUserSocials(formData: FormData) {
+// POST, UPDATE CURRENT USER SOCIALS
+export async function updateUserSocials(prevState: any, formData: FormData) {
   try {
     const session = await getServerSession(authOptions)
   
     if (!session) {
-      return { message: 'Unauthorized' }
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
     }
 
     await connectMongoDB()
     const user = await User.findById(session.user.id)
 
     if (!user) {
-      return { message: 'No valid user id', timestamp: Date.now() }
+      return { status: 404, message: 'User not found', timestamp: Date.now() };
     }
 
-    //TODO: find a way to gather user socials from mapping them in FE and update the ones modified
+    const { socials } = user
 
-    const socials = JSON.parse(formData.get("socials") as string || "[]");
+    const updatedSocials = await Promise.all(
+      socials.map(async (social: SocialsInterface) => {
+        const url = formData.get(`url_${social.label}`);
+        const tag = formData.get(`tag_${social.label}`);
+        const isDeleted = formData.get(`isDeleted_${social.label}`) === 'true';
 
-    if (!Array.isArray(socials)) {
-      return { status: 400, message: "Invalid socials data" };
-    }
+        if (isDeleted) {return null}
 
-    user.socials = socials.map((social) => ({
-      label: social.label || "",
-      tag: social.tag || "",
-    }));
+        return {
+          label: social.label,
+          url: url || social.url,
+          tag: tag || social.tag,
+          isDeleted: false,
+        };
+      })
+    );
 
+    user.socials = updatedSocials.filter((social): social is SocialsInterface => social !== null);
     await user.save();
-
-    return {
-      status: 200,
-      message: "Socials updated successfully",
-      socials: user.socials,
-    };
-
   } catch (error) {
-    return { message: 'Could not update socials', timestamp: Date.now() } 
+    return { status: 500, message: 'Could not update socials', timestamp: Date.now() } 
   }
+
+  revalidateTag('getUser')
+  revalidateTag('getUsersWithPaginationAndFilter')
+
+  return {
+    status: 200,
+    message: "Socials updated successfully",
+    timestamp: Date.now()
+  };
+}
+
+// PRIVATE
+// POST, CREATE USER SOCIALS
+export async function createSocial(prevState: any, formData: FormData) {
+  try {
+    const session = await getServerSession(authOptions)
+  
+    if (!session) {
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
+    }
+
+    const rawFormData = {
+      label: formData.get('label'),
+      tag: formData.get('tag'),
+      url: formData.get('url'),
+      isDeleted: false
+    }
+
+    const { label, tag, url } = rawFormData
+
+    await socialSchema.parseAsync(rawFormData)
+
+    const sanitizedLabel = xss(label!.toString())
+    const sanitizedTag = xss(tag!.toString())
+    const sanitizedUrl = xss(url!.toString())
+    
+    const user = await User.findById(session.user.id)
+
+    if (!user) {
+      return { status: 404, message: 'User not found', timestamp: Date.now() };
+    }
+
+    user.socials.push({ label: sanitizedLabel, tag: sanitizedTag, url: sanitizedUrl, isDeleted: false });
+    await user.save();
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { status: 400, message: error.message, timestamp: Date.now() };
+    }
+
+    return { status: 500, message: 'Could not update socials', timestamp: Date.now() } 
+  }
+
+  revalidateTag('getUser')
+  revalidateTag('getUsersWithPaginationAndFilter')
+
+  return {
+    status: 200,
+    message: "Socials updated successfully",
+    timestamp: Date.now()
+  };
 }

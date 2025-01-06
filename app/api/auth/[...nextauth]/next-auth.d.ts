@@ -7,7 +7,8 @@ import {
 export interface SocialsInterface  {
   label: string, 
   url: string,
-  tag: string
+  tag: string,
+  isDeleted: boolean
 }
 
 export interface UserInterface {

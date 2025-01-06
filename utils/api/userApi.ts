@@ -1,9 +1,9 @@
 // Fetching data on the server with the fetch API: https://nextjs.org/docs/app/building-your-application/data-fetching/fetching#fetching-data-on-the-server-with-the-fetch-api
-import { UserInterface } from "@/app/api/auth/[...nextauth]/next-auth"
 import { headers } from "next/headers"
 import { getBaseUrlBasedOnServer } from "../functions"
+import { CleanUserType } from "./usersApi";
 
-export async function getUser(): Promise<Omit<UserInterface, 'password'> | null> {
+export async function getUser(): Promise<CleanUserType | null> {
   const baseUrl = getBaseUrlBasedOnServer()
   const url = `${baseUrl}/api/user`;
   const res = await fetch(url, { 

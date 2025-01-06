@@ -7,11 +7,12 @@ export const DEFAULT_LOCALE: Locale = 'en'
 export const PAGINATIOIN_LIMIT = 10
 
 export type InitialStateType = {
+  status: number,
   message: string,
   timestamp: number
 }
 
-export const INITIAL_STATE = { message: '', timestamp: Date.now() }
+export const INITIAL_STATE = { status: 500, message: '', timestamp: Date.now() }
 
 export type LocaleType = {
     label: 'Italiano' | 'English',

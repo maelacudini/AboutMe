@@ -72,24 +72,21 @@ const Users = ( props: UsersPropsType ) => {
           {Array.from({ length: 3 }).map((_, index) => (
             <Skeleton key={index} className="w-full h-60 rounded-xl border" />
           ))}
-        </div>
-        :
-        <UsersList users={users}/>
-      }
+        </div> : <UsersList users={users}/>}
 
       <div className="flex items-center justify-between gap-4">
         <p className="text-muted-foreground">{pagination?.currentPage}</p>
         <div className="space-x-2">
           <Button
             variant="outline"
-            onClick={()=> next()}
+            onClick={()=> previous()}
             disabled={pagination?.currentPage === 1}
           >
             Previous
           </Button>
           <Button
             variant="outline"
-            onClick={()=> previous()}
+            onClick={()=> next()}
             disabled={pagination?.hasMore === false}
           >
             Next

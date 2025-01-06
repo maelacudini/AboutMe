@@ -1,6 +1,7 @@
 import CustomAlert from "../molecules/CustomAlert"
 import { UserCard } from "../molecules/UserCard"
 import { CleanUserType } from "@/utils/api/usersApi"
+import { v4 as uuidv4 } from 'uuid';
 
 export type UsersListPropsType = {
     users: [] | CleanUserType[]
@@ -20,7 +21,7 @@ export const UsersList = (props: UsersListPropsType) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
       {users.map((user) => (
-        <UserCard user={user} key={user.email}/>
+        <UserCard user={user} key={uuidv4()}/>
       ))}
     </div>
   )

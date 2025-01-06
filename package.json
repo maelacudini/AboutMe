@@ -40,6 +40,7 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^11.0.4",
     "xss": "^1.0.15",
     "zod": "^3.24.1"
   },

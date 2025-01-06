@@ -22,7 +22,7 @@ export default async function UserPublic({ params }: {params: Promise<{ slug: st
   const { slug } = await params;
   const t = await getTranslations("user");
   const user = await getUserPublic(slug)
-
+  
   let imageData: ImageDataType | null = null
   
   if (!user) {
@@ -35,14 +35,8 @@ export default async function UserPublic({ params }: {params: Promise<{ slug: st
     imageData = { base64, img }
   }
 
-  const socials = [
-    { label: 'Twitter', tag: '@example', url:'' },
-    { label: 'Instagram', tag: '@example', url:'' },
-    { label: 'Pinterest', tag: '@example', url:'' },
-    { label: 'Facebook', tag: '@example', url:'' },
-    { label: 'X', tag: '@example', url:'' },
-    { label: 'Snapchat', tag: '@example', url:'' },
-  ]
+  const userBio = user.bio ? user.bio : 'This user has no bio yet.'
+  const userHasSocials = user.socials && user.socials.length !== 0
 
   return (
     <Main>
@@ -72,9 +66,9 @@ export default async function UserPublic({ params }: {params: Promise<{ slug: st
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
           <Separator />
-          <p>{user.bio}</p>
+          <p>{userBio}</p>
           <div className="flex flex-wrap gap-4">
-            {socials.map((social, i) => (
+            {userHasSocials ? user.socials.map((social, i) => (
               <div key={social.label + i} className="flex">
                 <div className="mr-4">
                   <p>{social.label}</p>
@@ -82,7 +76,7 @@ export default async function UserPublic({ params }: {params: Promise<{ slug: st
                 </div>
                 <Separator orientation="vertical"/>
               </div>
-            ))}
+            )) : <p>This user has no socials yet.</p>}
           </div>
         </div>
       </div>

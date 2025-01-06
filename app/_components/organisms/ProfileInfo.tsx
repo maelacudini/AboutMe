@@ -1,5 +1,4 @@
 'use client'
-import { UserInterface } from "@/app/api/auth/[...nextauth]/next-auth"
 import { useTranslations } from "next-intl"
 import {
   useActionState, useEffect 
@@ -21,9 +20,10 @@ import Heading from "../atoms/Heading"
 import {
   Avatar, AvatarFallback, AvatarImage 
 } from "../../_components/shadcn/avatar";
+import { CleanUserType } from "@/utils/api/usersApi"
 
 export type ProfileInfoPropsType = {
-    user: Omit<UserInterface, 'password'>
+    user: CleanUserType
 }
 
 export const ProfileInfo = (props: ProfileInfoPropsType) => {
@@ -35,8 +35,8 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
     resolver: zodResolver(updateUserDataSchema),
     defaultValues: { 
       email: user.email,
-      avatar: user.avatar ? user.avatar : 'Add an avatar',
-      bio: user.bio ? user.bio : 'Add a bio',
+      avatar: user.avatar && user.avatar,
+      bio: user.bio && user.bio,
       username: user.username,
     },
     mode: 'onBlur',
@@ -102,7 +102,8 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
                 <FormLabel>Avatar</FormLabel>
                 <FormControl>
                   <Input
-                    {...field} 
+                    {...field}
+                    placeholder="Your avatar"
                     type="text"
                     name='avatar'
                   />
@@ -119,7 +120,8 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
                 <FormLabel>Bio</FormLabel>
                 <FormControl>
                   <Textarea
-                    {...field} 
+                    {...field}
+                    placeholder="Add your bio"
                     rows={5}
                     name='bio'
                   />
