@@ -52,7 +52,7 @@ const Signup = () => {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="supermario@gmail.com"
+                    placeholder="e.g. supermario@gmail.com"
                     {...field} 
                     type="email"
                     name="email" 
@@ -70,7 +70,7 @@ const Signup = () => {
                 <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="super_mario_45"
+                    placeholder="e.g. super_mario_45"
                     {...field} 
                     type="username"
                     name="username" 
