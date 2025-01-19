@@ -25,3 +25,10 @@ export const AVAILABLE_LOCALES: AvailableLocalesType = [
   { label: 'Italiano', tag: 'it' },
   { label: 'English', tag: 'en' },
 ]
+
+export const ICONS_SIZES = {
+  xs: 8,
+  sm: 16,
+  md: 24,
+  lg: 32
+}

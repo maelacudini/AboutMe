@@ -12,37 +12,47 @@ import {
   signOut, useSession 
 } from "next-auth/react"
 import { useTranslations } from "next-intl"
-import { AVAILABLE_LOCALES } from "@/utils/constants"
+import {
+  AVAILABLE_LOCALES, ICONS_SIZES 
+} from "@/utils/constants"
 import { setUserLocale } from "@/utils/server/functions/locale"
+import {
+  useEffect, useState 
+} from "react"
 
 const Header = () => {
   const t = useTranslations("navigation");
   const { status } = useSession()
   const { setTheme, theme } = useTheme()
-  
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <header className="flex justify-center p-4 fixed top-0 left-0 right-0 z-[99]">
+    <header className="flex justify-center p-4 fixed top-0 left-0 right-0 z-[97]">
       <Menubar>
-        <MenubarMenu key={'theme'}>
-          <MenubarTrigger onClick={() => setTheme(!theme || theme === 'light' ? 'dark' : 'light')}>
-            {(!theme || theme === 'light') ? <Moon height={16} width={16} /> : <Sun height={16} width={16}/>}
+        <MenubarMenu key='theme'>
+          <MenubarTrigger onClick={() => setTheme(!mounted || theme === 'light' ? 'dark' : 'light')}>
+            {(!mounted || theme === 'light') ? <Moon size={ICONS_SIZES.sm} /> : <Sun size={ICONS_SIZES.sm}/>}
           </MenubarTrigger>
         </MenubarMenu>
         <MenubarMenu key='home'>
           <MenubarTrigger>
-            <Link href='/'>{t("home")}</Link>
+            <Link href='/'>{t("home").toUpperCase()}</Link>
           </MenubarTrigger>
         </MenubarMenu>
-        {status === 'authenticated' ?
+        {!status || status === 'authenticated' ?
           <>
             <MenubarMenu key='profile'>
               <MenubarTrigger>
-                <Link href='/profile'>{t("profile")}</Link>
+                <Link href='/profile'>{t("profile").toUpperCase()}</Link>
               </MenubarTrigger>
             </MenubarMenu>
             <MenubarMenu key='logout'>
               <MenubarTrigger onClick={() => signOut()}>
-                <p>{t("logout")}</p>
+                <p>{t("logout").toUpperCase()}</p>
               </MenubarTrigger>
             </MenubarMenu>
           </> 
@@ -50,19 +60,19 @@ const Header = () => {
           <>
             <MenubarMenu key='signup'>
               <MenubarTrigger>
-                <Link href={'/signup'}>{t("signup")}</Link>
+                <Link href={'/signup'}>{t("signup").toUpperCase()}</Link>
               </MenubarTrigger>
             </MenubarMenu>
             <MenubarMenu key='login'>
               <MenubarTrigger>
-                <Link href={'/login'}>{t("login")}</Link>
+                <Link href={'/login'}>{t("login").toUpperCase()}</Link>
               </MenubarTrigger>
             </MenubarMenu>
           </>
         }
         <MenubarMenu key={'lang'}>
           <MenubarTrigger>
-            <Languages height={16} width={16}/>
+            <Languages size={ICONS_SIZES.sm}/>
           </MenubarTrigger>
           <MenubarContent>
             {AVAILABLE_LOCALES.map((locale) => (

@@ -1,3 +1,4 @@
+import { ICONS_SIZES } from '@/utils/constants'
 import {
   Alert, AlertDescription, AlertTitle, 
   alertVariants
@@ -18,7 +19,7 @@ const CustomAlert = (props: CustomAlertProps) => {
 
   return (
     <Alert variant={variant}>
-      {variant === 'default' ? <Info height={16} width={16} /> : <TriangleAlert height={16} width={16} />}
+      {variant === 'default' ? <Info size={ICONS_SIZES.sm} /> : <TriangleAlert size={ICONS_SIZES.sm} />}
       <div className='space-y-1'>
         <AlertTitle>{title}</AlertTitle>
         {description && <AlertDescription>{description}</AlertDescription>}

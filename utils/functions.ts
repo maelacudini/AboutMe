@@ -2,6 +2,10 @@ import { twMerge } from "tailwind-merge"
 import {
   type ClassValue, clsx 
 } from "clsx"
+import {
+  ExternalToast, toast 
+} from "sonner";
+import { ReactNode } from "react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -36,3 +40,22 @@ export const debounce = <Args extends unknown[]>(
 
 export const encodeId = (id: string): string => Buffer.from(id).toString("base64");
 export const decodeId = (encodedId: string): string => Buffer.from(encodedId, "base64").toString("utf8");
+
+export function showToast(
+  status: number,
+  message: string | ReactNode,
+  options?: ExternalToast
+) {
+  switch (true) {
+    case status >= 200 && status < 300:
+      return toast.success(message, options);
+    case status >= 300 && status < 400:
+      return toast.info(message, options);
+    case status >= 400 && status < 500:
+      return toast.warning(message, options);
+    case status >= 500:
+      return toast.error(message, options);
+    default:
+      return toast.info("Unexpected status received.", options);
+  }
+}

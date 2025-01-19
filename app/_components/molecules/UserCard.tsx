@@ -1,14 +1,19 @@
 import {
-  Card, CardContent, CardFooter, CardHeader, CardTitle 
+  Card, CardContent, CardHeader, CardTitle 
 } from "../shadcn/card"
 import {
   Avatar, AvatarFallback, AvatarImage 
 } from "../shadcn/avatar"
-import { Button } from "../shadcn/button"
-import { Separator } from "../shadcn/separator"
-import { useRouter } from "next/navigation"
 import { CleanUserType } from "@/utils/api/usersApi"
 import { v4 as uuidv4 } from 'uuid';
+import { Badge } from "../shadcn/badge"
+import Link from "next/link"
+import { SquareArrowOutUpRight } from "lucide-react";
+import {
+  Tooltip, TooltipContent, TooltipTrigger 
+} from "../shadcn/tooltip";
+import { useTranslations } from "next-intl";
+import { ICONS_SIZES } from "@/utils/constants";
 
 export type UserCardPropsType = {
   user: CleanUserType
@@ -16,36 +21,46 @@ export type UserCardPropsType = {
 
 export const UserCard = (props: UserCardPropsType) => {
   const { user } = props
-  const router = useRouter()
-  const userBio = user.bio ? (user.bio.length > 100 ? `${user.bio.slice(0,100)}...` : user.bio) : 'This user has no bio yet.'
+  const t = useTranslations('home');  
   const userHasSocials = user.socials && user.socials.length !== 0
       
   return (
     <Card>
-      <div className="flex gap-2 items-center">
-        <Avatar>
-          <AvatarImage src={user.avatar} />
-          <AvatarFallback>{user.email.slice(0,1)}</AvatarFallback>
-        </Avatar>
-        <CardHeader>
-          <CardTitle>{user.username}</CardTitle>
-        </CardHeader>
+      <div className="flex items-center gap-2 justify-between">
+        <div className="flex gap-2 items-center">
+          <Avatar>
+            <AvatarImage src={user.avatar} />
+            <AvatarFallback>{user.email.slice(0,1)}</AvatarFallback>
+          </Avatar>
+          <CardHeader>
+            <CardTitle>{user.username}</CardTitle>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
+          </CardHeader>
+        </div>
+        <Tooltip>
+          <TooltipTrigger>
+            <Link href={`/${user.username}`}><SquareArrowOutUpRight size={ICONS_SIZES.sm}/></Link>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t('user_visit_profile',{ username: user.username })}</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
       <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground">{userBio}</p>
         <div className="flex gap-2 items-center overflow-x-scroll w-full">
           {userHasSocials ? 
             user.socials.map((social) => (
-              <div key={uuidv4()} className="flex items-center gap-2">
-                <a href={social.url} target="_blank" rel="noopener noreferrer">{social.label}</a>
-                <Separator orientation="vertical" className="h-4" />
-              </div>
-            )) : <p className="text-sm text-muted-foreground">This user has no socials yet.</p> }
+              <Tooltip key={uuidv4()}>
+                <TooltipTrigger>
+                  <Badge><a href={social.url} target="_blank" rel="noopener noreferrer">{social.label}</a></Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{social.tag}</p>
+                </TooltipContent>
+              </Tooltip>          
+            )) : <p className="text-sm text-muted-foreground">{t('user_no_socials')}</p> }
         </div>
       </CardContent>
-      <CardFooter>
-        <Button variant='default' type="button" onClick={()=>router.push(`/${user.username}`)}>See more</Button>
-      </CardFooter>
     </Card>
   )
 }

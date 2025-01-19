@@ -34,14 +34,11 @@ const UserSchema = new Schema<UserInterface>(
         },
         label: {
           type: String,
+          unique: true,
           required: true,
         },
         url: {
           type: String,
-          required: true,
-        },
-        isDeleted: {
-          type: Boolean,
           required: true,
         },
       }

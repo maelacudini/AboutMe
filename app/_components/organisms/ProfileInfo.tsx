@@ -15,42 +15,46 @@ import {
 import { Input } from "../shadcn/input"
 import { Button } from "../shadcn/button"
 import { Textarea } from "../shadcn/textarea"
-import { toast } from "sonner"
-import Heading from "../atoms/Heading"
 import {
   Avatar, AvatarFallback, AvatarImage 
 } from "../../_components/shadcn/avatar";
 import { CleanUserType } from "@/utils/api/usersApi"
+import { showToast } from "@/utils/functions"
 
 export type ProfileInfoPropsType = {
-    user: CleanUserType
+  user: CleanUserType
 }
 
 export const ProfileInfo = (props: ProfileInfoPropsType) => {
-  const { user } = props
-
+  const { user } = props  
   const t = useTranslations();  
   const [state, formAction, pending] = useActionState(updateUserData, INITIAL_STATE)
   const form = useForm<z.infer<typeof updateUserDataSchema>>({
     resolver: zodResolver(updateUserDataSchema),
     defaultValues: { 
       email: user.email,
-      avatar: user.avatar && user.avatar,
-      bio: user.bio && user.bio,
+      avatar: user.avatar || '',
+      bio: user.bio || '',
       username: user.username,
     },
-    mode: 'onBlur',
+    mode: 'onChange',
   })
-
+  
   useEffect(() => {
     if (state.message && state.message.trim().length !== 0) {
-      toast.error(state.message)      
+      showToast(state.status, state.message)
     }
-  }, [state.message, state.timestamp])  
+    form.reset({
+      email: user.email,
+      avatar: user.avatar || '',
+      bio: user.bio || '',
+      username: user.username,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state])  
 
   return (
     <section className="space-y-4">
-      <Heading tag="h3" size="text-3xl">Edit your general info</Heading>
       <div className="flex justify-center">
         <Avatar className="w-40 h-40">
           <AvatarImage src={user.avatar} />
@@ -58,19 +62,19 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
         </Avatar>
       </div>
       <Form {...form}>
-        <form action={formAction} className="grid md:grid-cols-3 gap-2">
+        <form action={formAction} className="grid sm:grid-cols-3 gap-2">
           <FormField
             control={form.control}
             name='email'
             render={({ field }) => (
-              <FormItem className="col-span-3 md:col-span-1">
+              <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder={user.email}
-                    {...field} 
+                    {...field}
                     type="text"
                     name='email'
+                    placeholder='e.g. supermario@gmail.com'
                   />
                 </FormControl>
                 <FormMessage />
@@ -81,13 +85,14 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
             control={form.control}
             name='username'
             render={({ field }) => (
-              <FormItem className="col-span-3 md:col-span-1">
+              <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input
                     {...field} 
                     type="text"
                     name='username'
+                    placeholder='e.g. super_mario_45'
                   />
                 </FormControl>
                 <FormMessage />
@@ -98,14 +103,14 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
             control={form.control}
             name='avatar'
             render={({ field }) => (
-              <FormItem className="col-span-3 md:col-span-1">
+              <FormItem>
                 <FormLabel>Avatar</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="Your avatar"
                     type="text"
                     name='avatar'
+                    placeholder="https://yourprofileimage.com"
                   />
                 </FormControl>
                 <FormMessage />
@@ -116,23 +121,23 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
             control={form.control}
             name='bio'
             render={({ field }) => (
-              <FormItem className="col-span-3">
+              <FormItem className="sm:col-span-3">
                 <FormLabel>Bio</FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Add your bio"
                     rows={5}
                     name='bio'
+                    placeholder="Hey everyone! I am ..."
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="grid grid-cols-2 gap-4 justify-between items-center w-full">
-            <Button type="submit" disabled={pending || !form.formState.isValid} variant='outline'>{t("forms.form_buttons.submit")}</Button>
-            <Button type="reset" disabled={pending} variant='default' onClick={()=>form.reset()}>{t("forms.form_buttons.reset")}</Button>            
+          <div className="sm:col-span-3 flex justify-end gap-2 w-full">
+            <Button type="submit" disabled={pending || !form.formState.isValid || !form.formState.isDirty} variant='outline'>{t("buttons.submit")}</Button>
+            <Button type="reset" disabled={pending} variant='default' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>            
           </div>
         </form>
       </Form>

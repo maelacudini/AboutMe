@@ -1,5 +1,6 @@
 import {
-  boolean,
+  array,
+  literal,
   object, string 
 } from "zod"
  
@@ -41,23 +42,32 @@ export const updatePasswordSchema = object({
 export const updateUserDataSchema = object({
   email: string({ required_error: "Email is required" })
     .email("Invalid email")
-    .min(1),
-  username: string({ required_error: "Username is required" }).min(1),
+    .min(1)
+    .max(50),
+  username: string({ required_error: "Username is required" })
+    .min(1)
+    .max(50),
   bio: string()
     .max(400)
     .optional(),
   avatar: string()
     .url("Invalid url")
+    .or(literal("")) 
     .optional(),
 })
 
 export const socialSchema = object({
   label: string({ required_error: "Label is required" })
-    .min(1, "Label is required"),
+    .min(1, "Label is required")
+    .max(50),
   tag: string({ required_error: "Tag is required" })
-    .min(1, "Tag is required"),
+    .min(1, "Tag is required")
+    .max(50),
   url: string({ required_error: "Url is required" })
     .min(1, "Url is required")
+    .max(50)
     .url(),
-  isDeleted: boolean()
+  _id: string().optional()
 })
+
+export const socialsArraySchema = object({ socials: array(socialSchema), });

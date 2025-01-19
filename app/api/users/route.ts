@@ -9,7 +9,8 @@ import { PAGINATIOIN_LIMIT } from "@/utils/constants";
 // GET ALL USERS, http://localhost:3000/api/users?page=1&filter=
 export async function GET(req: NextRequest) {
   try {
-    const filter = req.nextUrl.searchParams.get("filter");
+    const filter = req.nextUrl.searchParams.get("filter") || '';
+    const sortParam = req.nextUrl.searchParams.get("sort") || 'asc';
     const pageParam = req.nextUrl.searchParams.get("page") || '1';
     const page = parseInt(pageParam, 10);    
   
@@ -28,7 +29,8 @@ export async function GET(req: NextRequest) {
         { email: { $regex: filter, $options: 'i' } }
       ]
     } : {};
-    const users = await User.find(query).select('-password -_id').skip((page - 1) * PAGINATIOIN_LIMIT).limit(PAGINATIOIN_LIMIT).lean();
+    const sortOrder = sortParam === 'desc' ? -1 : 1;
+    const users = await User.find(query).select('-password -_id').sort({ username: sortOrder }).skip((page - 1) * PAGINATIOIN_LIMIT).limit(PAGINATIOIN_LIMIT).lean();
     
     const totalUsers = await User.countDocuments(query); 
     const hasMore = page * PAGINATIOIN_LIMIT < totalUsers;

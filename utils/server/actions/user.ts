@@ -11,7 +11,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import bcrypt from "bcryptjs";
 import { revalidateTag } from "next/cache";
-import { SocialsInterface } from "@/app/api/auth/[...nextauth]/next-auth";
+import {
+  SocialsInterface, UserInterface 
+} from "@/app/api/auth/[...nextauth]/next-auth";
+import { redirect } from "next/navigation";
 
 // PUBLIC
 // POST, SIGN UP
@@ -33,14 +36,12 @@ export async function createUser(prevState: any, formData: FormData) {
 
     await connectMongoDB()
 
-    const query = {
+    const existingUser = await User.findOne({
       $or: [
         { email: sanitizedEmail },
         { username: sanitizedUsername }
       ]
-    }
-
-    const existingUser = await User.findOne(query)
+    })
    
     if (existingUser) {
       if (existingUser.email === sanitizedEmail) {
@@ -57,7 +58,6 @@ export async function createUser(prevState: any, formData: FormData) {
       username: sanitizedUsername,
       password: hashedPassword,
     })
-
   } catch (error) {
     if (error instanceof ZodError) {
       return { status: 400, message: error.message, timestamp: Date.now() };
@@ -67,8 +67,7 @@ export async function createUser(prevState: any, formData: FormData) {
   } 
 
   revalidateTag('getUsersWithPaginationAndFilter')
-
-  return { status: 200, message: 'User succesfully created', timestamp: Date.now() };
+  redirect('/login')
 }
 
 // PRIVATE
@@ -95,7 +94,7 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
 
     await connectMongoDB()
     
-    const user = await User.findById(session.user.id)
+    const user = await User.findById(session.user.id).lean<UserInterface | null>();
 
     if (!user) {
       return { status: 404, message: 'No user found', timestamp: Date.now() };
@@ -123,6 +122,7 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
 
 // PRIVATE
 // POST, UPDATE USER GENERAL DATA
+// eslint-disable-next-line complexity
 export async function updateUserData(prevState: any, formData: FormData) {
   try {
     const session = await getServerSession(authOptions)
@@ -158,21 +158,19 @@ export async function updateUserData(prevState: any, formData: FormData) {
     await connectMongoDB()
 
     // Exclude the current user from the query by adding the `user.id` to the condition
-    const query = {
+    const existingUser = await User.findOne({
       $or: [
         { email: sanitizedData.email },
         { username: sanitizedData.username }
       ],
       _id: { $ne: session.user.id }
-    };
-
-    const existingUser = await User.findOne(query);
+    });
    
     if (existingUser) {
       if (existingUser.email === sanitizedData.email) {
-        return { message: 'User already exists', timestamp: Date.now() };
+        return { status: 409, message: 'User already exists', timestamp: Date.now() };
       } else if (existingUser.username === sanitizedData.username) {
-        return { message: 'Username is already taken', timestamp: Date.now() };
+        return { status: 409, message: 'Username is already taken', timestamp: Date.now() };
       }
     }
     
@@ -185,7 +183,6 @@ export async function updateUserData(prevState: any, formData: FormData) {
     if (!updatedUser) {
       return { status: 404, message: 'User not found', timestamp: Date.now() };
     }
-    
   } catch (error) {
     return { status: 500, message: 'Could not update field', timestamp: Date.now() } 
   } 
@@ -213,26 +210,12 @@ export async function updateUserSocials(prevState: any, formData: FormData) {
       return { status: 404, message: 'User not found', timestamp: Date.now() };
     }
 
-    const { socials } = user
+    user.socials = user.socials.map((social: SocialsInterface) => ({
+      label: social.label,
+      url: formData.get(`url_${social.label}`) || social.url,
+      tag: formData.get(`tag_${social.label}`) || social.tag,
+    }));
 
-    const updatedSocials = await Promise.all(
-      socials.map(async (social: SocialsInterface) => {
-        const url = formData.get(`url_${social.label}`);
-        const tag = formData.get(`tag_${social.label}`);
-        const isDeleted = formData.get(`isDeleted_${social.label}`) === 'true';
-
-        if (isDeleted) {return null}
-
-        return {
-          label: social.label,
-          url: url || social.url,
-          tag: tag || social.tag,
-          isDeleted: false,
-        };
-      })
-    );
-
-    user.socials = updatedSocials.filter((social): social is SocialsInterface => social !== null);
     await user.save();
   } catch (error) {
     return { status: 500, message: 'Could not update socials', timestamp: Date.now() } 
@@ -244,6 +227,54 @@ export async function updateUserSocials(prevState: any, formData: FormData) {
   return {
     status: 200,
     message: "Socials updated successfully",
+    timestamp: Date.now()
+  };
+}
+
+// PRIVATE
+// DELETE SOCIAL
+export async function deleteSocial(label: string) {
+  try {
+    const session = await getServerSession(authOptions)    
+    
+    if (!session) {
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
+    }
+
+    if (!label) {
+      return { status: 404, message: 'Please pass a label', timestamp: Date.now() };
+    }
+    const sanitizedLabel = xss(label.toString())
+  
+    await connectMongoDB()
+
+    const user = await User.findById(session.user.id)
+
+    if (!user) {
+      return { status: 404, message: 'User not found', timestamp: Date.now() };
+    }
+
+    const socialIndex = user.socials.findIndex(
+      (social: { label: string }) => social.label === sanitizedLabel
+    );
+
+    if (socialIndex === -1) {
+      return { status: 404, message: 'Social not found', timestamp: Date.now() };
+    }
+
+    user.socials.splice(socialIndex, 1);
+
+    await user.save();
+  } catch (error) {
+    return { status: 500, message: 'Could not delete user', timestamp: Date.now() } 
+  }
+
+  revalidateTag('getUser')
+  revalidateTag('getUsersWithPaginationAndFilter')
+
+  return {
+    status: 200,
+    message: "Social deleted successfully",
     timestamp: Date.now()
   };
 }
@@ -262,7 +293,6 @@ export async function createSocial(prevState: any, formData: FormData) {
       label: formData.get('label'),
       tag: formData.get('tag'),
       url: formData.get('url'),
-      isDeleted: false
     }
 
     const { label, tag, url } = rawFormData
@@ -279,14 +309,22 @@ export async function createSocial(prevState: any, formData: FormData) {
       return { status: 404, message: 'User not found', timestamp: Date.now() };
     }
 
-    user.socials.push({ label: sanitizedLabel, tag: sanitizedTag, url: sanitizedUrl, isDeleted: false });
+    const existingSocial = user.socials.find(
+      (social: SocialsInterface) => social.label === sanitizedLabel
+    );
+    
+    if (existingSocial) {
+      return { status: 400, message: 'This label is already in use', timestamp: Date.now() };
+    }
+
+    user.socials.push({ label: sanitizedLabel, tag: sanitizedTag, url: sanitizedUrl });
     await user.save();
   } catch (error) {
     if (error instanceof ZodError) {
       return { status: 400, message: error.message, timestamp: Date.now() };
     }
 
-    return { status: 500, message: 'Could not update socials', timestamp: Date.now() } 
+    return { status: 500, message: 'Could not create social', timestamp: Date.now() } 
   }
 
   revalidateTag('getUser')
@@ -294,7 +332,50 @@ export async function createSocial(prevState: any, formData: FormData) {
 
   return {
     status: 200,
-    message: "Socials updated successfully",
+    message: "Social created successfully",
+    timestamp: Date.now()
+  };
+}
+
+// PRIVATE
+// DELETE USER
+export async function deleteUser(prevState: any, formData: FormData) {
+  try {
+    const session = await getServerSession(authOptions)    
+    
+    if (!session) {
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
+    }
+
+    const password = formData.get('password')
+
+    if (!password) {
+      return { status: 404, message: 'No password received', timestamp: Date.now() };
+    }
+    const sanitizedPassword = xss(password.toString())
+  
+    await connectMongoDB()
+
+    const user = await User.findById(session.user.id).lean<UserInterface | null>();
+
+    if (!user) {
+      return { status: 404, message: 'User not found', timestamp: Date.now() };
+    }
+
+    const match = await bcrypt.compare(sanitizedPassword, user.password);
+
+    if (!match) {
+      return { status: 400, message: 'Incorrect password', timestamp: Date.now() };
+    }
+
+    await User.deleteOne({ _id: user._id });
+  } catch (error) {
+    return { status: 500, message: 'Could not delete user', timestamp: Date.now() } 
+  }
+
+  return {
+    status: 200,
+    message: "User deleted successfully",
     timestamp: Date.now()
   };
 }

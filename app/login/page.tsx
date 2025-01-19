@@ -1,6 +1,5 @@
 'use client'
 import { useForm } from "react-hook-form"
-import Main from "../_components/layouts/Main"
 import { logInSchema } from "@/lib/zod/ValidationSchemas"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -16,12 +15,12 @@ import { useTransition } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Heading from "../_components/atoms/Heading"
-import { PartyPopper } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
+import Main from "../_components/layouts/Main"
 
 const Login = () => {
-  const t = useTranslations("forms");
+  const t = useTranslations();
   const [isPending, startTransition] = useTransition()
   const route = useRouter()
 
@@ -31,7 +30,7 @@ const Login = () => {
       email: "",
       password: ""
     },
-    mode: 'onBlur'
+    mode: 'onChange'
   })
 
   function onSubmit(values: z.infer<typeof logInSchema>) {
@@ -60,11 +59,7 @@ const Login = () => {
     <Main className="h-lvh flex justify-center items-center gap-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-xs w-full">
-          <div className="flex items-center gap-2">
-            <Heading tag="h4" size="text-2xl">{t("login.form_title")}</Heading>
-            <PartyPopper height={16} width={16}/>
-          </div>
-
+          <Heading tag="h4" size="text-2xl">{t("login.form_title")}</Heading>
           <FormField
             control={form.control}
             name="email"
@@ -74,7 +69,7 @@ const Login = () => {
                 <FormControl>
                   <Input
                     {...field} 
-                    placeholder="Email" 
+                    placeholder="supermario@gmail.com" 
                     type="email" 
                     name="email"
                   />
@@ -92,7 +87,7 @@ const Login = () => {
                 <FormControl>
                   <Input 
                     {...field} 
-                    placeholder="Password" 
+                    placeholder="********" 
                     type="password" 
                     name="password"
                   />
@@ -102,8 +97,8 @@ const Login = () => {
             )}
           />
           <div className="grid grid-cols-2 gap-2 justify-between items-center w-full">
-            <Button disabled={isPending || !form.formState.isValid} type="submit" variant='outline'>{t("form_buttons.submit")}</Button>
-            <Button disabled={isPending} type="reset" variant='default' onClick={()=>form.reset()}>{t("form_buttons.reset")}</Button>
+            <Button disabled={isPending || !form.formState.isValid} type="submit" variant='outline'>{t("buttons.submit")}</Button>
+            <Button disabled={isPending} type="reset" variant='default' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>
           </div>
         </form>
       </Form>

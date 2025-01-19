@@ -12,9 +12,9 @@ export type GetUsersWithPaginationAndFilterResponseType = {
   }
 }
 
-export async function getUsersWithPaginationAndFilter(page: number, filter: string = ''): Promise<GetUsersWithPaginationAndFilterResponseType> {
+export async function getUsersWithPaginationAndFilter(page: number = 1, filter: string = '', sort: 'asc' | 'desc' = 'asc'): Promise<GetUsersWithPaginationAndFilterResponseType> {
   const baseUrl = getBaseUrlBasedOnServer()
-  const url = `${baseUrl}/api/users?page=${page}&filter=${filter}`;
+  const url = `${baseUrl}/api/users?page=${page}&filter=${filter}&sort=${sort}`;
   const res = await fetch(url, { 
     next: { tags: ['getUsersWithPaginationAndFilter'] },
     cache: 'no-store'

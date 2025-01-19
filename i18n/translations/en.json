@@ -1,40 +1,82 @@
 {
     "navigation": {
-        "home": "HOME",
-        "login": "LOGIN",
-        "signup": "SIGNUP",
-        "profile": "PROFILE",
-        "logout": "LOGOUT"
+        "home": "Home",
+        "login": "Login",
+        "signup": "Signup",
+        "profile": "Profile",
+        "logout": "Logout"
     },
-    "forms": {
-        "login": {
-            "form_title": "Nice to see you again!",
-            "form_redirect": {
-                "question": "Don't have an account?",
-                "link": "Signup here!"
-            }
-        },
-        "signup": {
-            "form_title": "New member, yay!",
-            "form_redirect": {
-                "question": "Already have an account?",
-                "link": "Login here!"
-            }
-        },
-        "form_buttons": {
-            "submit": "Submit",
-            "reset": "Reset"
+    "buttons": {
+        "delete": "Delete",
+        "continue": "Continue",
+        "submit": "Submit",
+        "reset": "Reset",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+    },
+    "login": {
+        "form_title": "Nice to see you again! 👀",
+        "form_redirect": {
+            "question": "Don't have an account?",
+            "link": "Signup here!"
+        }
+    },
+    "signup": {
+        "form_title": "New member, yay! 🎉",
+        "form_redirect": {
+            "question": "Already have an account?",
+            "link": "Login here!"
         }
     },
     "home": {
-        "hero_title": "About our clique"
+        "hero_title": "About our clique",
+        "user_visit_profile": "Visit {username}'s profile",
+        "user_no_socials": "This user has no socials yet."
     },
     "user": {
-        "hero_title": "About {name}"
+        "hero_title": "About {name}",
+        "user_no_socials": "This user has no socials yet.",
+        "user_no_bio": "This user has no bio yet."
     },
     "profile": {
         "no_user": "No user found.",
         "hero_title": "Hello, {name}!",
-        "edit": "Edit your profile info here."
+        "edit": "Edit your profile info here.",
+        "edit_socials_title": "Edit your socials",
+        "add_social_title": "Add social",
+        "add_social_description": "Here you can add your favourite socials, take your time.",
+        "user_no_socials": "This user has no socials yet.",
+        "delete_social_title": "Are you absolutely sure?",
+        "delete_social_description": "This action cannot be undone. This will permanently delete this social from your profile. You can always create it again!",
+        "delete_profile_card_title": "Delete your account",
+        "delete_profile_card_description": "We're sad to see you go, hope to see you around again if you change your mind!",
+        "delete_profile_confirm_password": "Confirm your password",
+        "delete_profile_confirm_password_placeholder": "Current password",
+        "delete_profile_alert_title": "Are you absolutely sure?",
+        "delete_profile_alert_description": "This action cannot be undone. This will permanently delete your account and remove your data from our servers."
+    },
+    "toast": {
+        "fetch_users_error": "Could not fetch users"
+    },
+    "no_users_card": {
+        "title": "No users found :(",
+        "description": "Well that was unfortunate...",
+        "content": "Maybe try again?"
+    },
+    "filter": {
+        "title": "Looking for someone?",
+        "placeholder": "Search by username or email",
+        "sort_asc": "Sort alphabetically",
+        "sort_desc": "Sort in reverse alphabetical order"
+    },
+    "pagination": {
+        "previous_btn": "Previous",
+        "next_btn": "Next"
+    },
+    "footer": {
+        "title": "Need any support or have a new project in mind? We're always open for a chat, so get in touch to find out how we can help!",
+        "subtitle": "Developed with ❤️ by",
+        "follow_us": "Follow us",
+        "sitemap": "Sitemap"
     }
 }

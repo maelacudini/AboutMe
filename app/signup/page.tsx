@@ -2,7 +2,6 @@
 import {
   useActionState, useEffect 
 } from "react"
-import Main from "../_components/layouts/Main"
 import { createUser } from "@/utils/server/actions/user"
 import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage 
@@ -16,13 +15,13 @@ import { Separator } from "../_components/shadcn/separator"
 import Link from "next/link"
 import { z } from "zod"
 import Heading from "../_components/atoms/Heading"
-import { PartyPopper } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { INITIAL_STATE } from "@/utils/constants"
-import { toast } from "sonner"
+import { showToast } from "@/utils/functions"
+import Main from "../_components/layouts/Main"
  
 const Signup = () => {  
-  const t = useTranslations("forms");
+  const t = useTranslations();
   const [state, formAction, pending] = useActionState(createUser, INITIAL_STATE)
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -31,24 +30,20 @@ const Signup = () => {
       username: '',
       password: '',
     },
-    mode: 'onBlur'
+    mode: 'onChange'
   })
 
   useEffect(() => {
     if (state.message && state.message.trim().length !== 0) {
-      toast.error(state.message)      
+      showToast(state.status, state.message)
     }
-  }, [state.message, state.timestamp])
+  }, [state])
   
   return (
     <Main className="h-lvh flex justify-center items-center gap-8">
       <Form {...form}>
         <form action={formAction} className="space-y-4 max-w-xs w-full">
-          <div className="flex items-center gap-2">
-            <Heading tag="h4" size="text-2xl">{t("signup.form_title")}</Heading>
-            <PartyPopper height={16} width={16}/>
-          </div>
-
+          <Heading tag="h4" size="text-2xl">{t("signup.form_title")}</Heading>
           <FormField
             control={form.control}
             name="email"
@@ -57,7 +52,7 @@ const Signup = () => {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="Email"
+                    placeholder="supermario@gmail.com"
                     {...field} 
                     type="email"
                     name="email" 
@@ -75,7 +70,7 @@ const Signup = () => {
                 <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="Username"
+                    placeholder="super_mario_45"
                     {...field} 
                     type="username"
                     name="username" 
@@ -93,7 +88,7 @@ const Signup = () => {
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="Password"
+                    placeholder="********"
                     {...field} 
                     type="password" 
                     name="password"
@@ -104,8 +99,8 @@ const Signup = () => {
             )}
           />
           <div className="grid grid-cols-2 gap-2 justify-between items-center w-full">
-            <Button type="submit" disabled={pending || !form.formState.isValid} variant='outline'>{t("form_buttons.submit")}</Button>
-            <Button type="reset" disabled={pending} variant='default' onClick={()=>form.reset()}>{t("form_buttons.reset")}</Button>            
+            <Button type="submit" disabled={pending || !form.formState.isValid} variant='outline'>{t("buttons.submit")}</Button>
+            <Button type="reset" disabled={pending} variant='default' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>            
           </div>
         </form>
       </Form>

@@ -1,13 +1,17 @@
 import { getTranslations } from "next-intl/server";
-import Main from "../_components/layouts/Main";
 import Hero from "../_components/organisms/Hero";
 import { getUserPublic } from "@/utils/api/userPublicApi";
 import { notFound } from "next/navigation";
-import { getImageWithPlaiceholder } from "@/utils/server/functions/images";
-import Image from "next/image";
-import { User } from "lucide-react";
 import Heading from "../_components/atoms/Heading";
-import { Separator } from "../_components/shadcn/separator";
+import {
+  Tooltip, TooltipContent, TooltipTrigger 
+} from "../_components/shadcn/tooltip";
+import { v4 as uuidv4 } from 'uuid';
+import { Badge } from "../_components/shadcn/badge";
+import Main from "../_components/layouts/Main";
+import {
+  Avatar, AvatarFallback, AvatarImage 
+} from "../_components/shadcn/avatar";
 
 export type ImageDataType = {
   img: {
@@ -23,60 +27,40 @@ export default async function UserPublic({ params }: {params: Promise<{ slug: st
   const t = await getTranslations("user");
   const user = await getUserPublic(slug)
   
-  let imageData: ImageDataType | null = null
-  
   if (!user) {
     notFound()
   }
 
-  if (user.avatar) {
-    const { base64, img } = await getImageWithPlaiceholder(user.avatar);
-
-    imageData = { base64, img }
-  }
-
-  const userBio = user.bio ? user.bio : 'This user has no bio yet.'
+  const userBio = user.bio ? user.bio : t('user_no_bio')
   const userHasSocials = user.socials && user.socials.length !== 0
 
   return (
     <Main>
       <Hero title={t("hero_title",  { name: user.username })} />
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="relative w-full aspect-square">
-          {imageData ?
-            <Image 
-              src={imageData.img.src}
-              fill
-              alt="user avatar" 
-              title="User avatar"
-              placeholder="blur" 
-              blurDataURL={imageData.base64} 
-              className="aspect-square object-center object-cover rounded-xl"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-            :
-            <div className="w-96 h-96 aspect-square flex justify-center items-center bg-muted rounded-xl">
-              <User height={32} width={32} />
-            </div>
-          }
-        </div>
-        <div className="space-y-4">
+      <div className="space-y-8 flex flex-col justify-center items-center text-center">
+        <Avatar className="w-48 h-48">
+          <AvatarImage src={user.avatar} />
+          <AvatarFallback>{user.username.slice(0,2)}</AvatarFallback>
+        </Avatar>
+        <div className="space-y-4 max-w-lg">
           <div>
             <Heading size="text-xl" tag="h4">{user.username}</Heading>
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
-          <Separator />
           <p>{userBio}</p>
-          <div className="flex flex-wrap gap-4">
-            {userHasSocials ? user.socials.map((social, i) => (
-              <div key={social.label + i} className="flex">
-                <div className="mr-4">
-                  <p>{social.label}</p>
-                  <a href={social.url} className="text-sm text-muted-foreground">{social.tag}</a>
-                </div>
-                <Separator orientation="vertical"/>
-              </div>
-            )) : <p>This user has no socials yet.</p>}
+          <div className="flex flex-wrap gap-2 items-center justify-center">
+            {userHasSocials ? user.socials.map((social) => (
+              <Tooltip key={uuidv4()}>
+                <TooltipTrigger>
+                  <Badge>
+                    <a target="_blank" rel="noopener noreferrer" href={social.url}>{social.label}</a>
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{social.tag}</p>
+                </TooltipContent>
+              </Tooltip>
+            )) : <p>{t('user_no_socials')}</p>}
           </div>
         </div>
       </div>

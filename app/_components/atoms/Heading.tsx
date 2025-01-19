@@ -14,7 +14,7 @@ const Heading = (props: HeadingPropsType) => {
   const Tag = tag
 
   return (
-    <Tag {...rest} className={cn('font-medium', size, className)}>
+    <Tag {...rest} style={{ overflowWrap: 'anywhere' }} className={cn('font-medium', size, className)}>
       {children}
     </Tag>
   )

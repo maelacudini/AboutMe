@@ -1,40 +1,82 @@
 {
     "navigation": {
-        "home": "HOME",
-        "login": "LOGIN",
-        "signup": "ISCRIVITI",
-        "profile": "PROFILO",
-        "logout": "LOGOUT"
+        "home": "Home",
+        "login": "Accedi",
+        "signup": "Registrati",
+        "profile": "Profilo",
+        "logout": "Esci"
     },
-    "forms": {
-        "login": {
-            "form_title": "Che bello rivederti!",
-            "form_redirect": {
-                "question": "Non hai un account?",
-                "link": "Iscriviti!"
-            }
-        },
-        "signup": {
-            "form_title": "Un nuovo utente, yay!",
-            "form_redirect": {
-                "question": "Hai già un account?",
-                "link": "Vai al login!"
-            }
-        },
-        "form_buttons": {
-            "submit": "Invia",
-            "reset": "Cancella"
+    "buttons": {
+        "delete": "Elimina",
+        "continue": "Continua",
+        "submit": "Invia",
+        "reset": "Ripristina",
+        "cancel": "Annulla",
+        "confirm": "Conferma"
+    },
+    "login": {
+        "form_title": "Felici di rivederti! 👀",
+        "form_redirect": {
+            "question": "Non hai un account?",
+            "link": "Registrati qui!"
+        }
+    },
+    "signup": {
+        "form_title": "Un nuovo utente, yay! 🎉",
+        "form_redirect": {
+            "question": "Hai già un account?",
+            "link": "Accedi qui!"
         }
     },
     "home": {
-        "hero_title": "Scopri la nostra clique"
+        "hero_title": "Scopri il nostro gruppo",
+        "user_visit_profile": "Visita il profilo di {username}",
+        "user_no_socials": "Questo utente non ha ancora aggiunto social."
     },
     "user": {
-        "hero_title": "A proposito di {name}"
+        "hero_title": "A proposito di {name}",
+        "user_no_socials": "Questo utente non ha ancora aggiunto social.",
+        "user_no_bio": "Questo utente non ha ancora una biografia."
     },
     "profile": {
-        "no_user": "Nessun user trovato.",
-        "hero_title": "Hey, {name}!",
-        "edit": "Modifica qua il tuo profilo."
+        "no_user": "Nessun utente trovato.",
+        "hero_title": "Ciao, {name}!",
+        "edit": "Modifica qui le informazioni del tuo profilo.",
+        "edit_socials_title": "Modifica i tuoi social",
+        "add_social_title": "Aggiungi un social",
+        "add_social_description": "Qui puoi aggiungere i tuoi social preferiti, prenditi il tuo tempo.",
+        "user_no_socials": "Questo utente non ha ancora aggiunto social.",
+        "delete_social_title": "Sei sicuro al 100%?",
+        "delete_social_description": "Questa azione è irreversibile. Questo social verrà eliminato definitivamente dal tuo profilo. Puoi sempre aggiungerlo di nuovo!",
+        "delete_profile_card_title": "Elimina il tuo account",
+        "delete_profile_card_description": "Ci dispiace vederti andare via, speriamo di rivederti se cambi idea!",
+        "delete_profile_confirm_password": "Conferma la tua password",
+        "delete_profile_confirm_password_placeholder": "Password attuale",
+        "delete_profile_alert_title": "Sei sicuro al 100%?",
+        "delete_profile_alert_description": "Questa azione è irreversibile. Il tuo account verrà eliminato definitivamente e i tuoi dati rimossi dai nostri server."
+    },
+    "toast": {
+        "fetch_users_error": "Non è stato possibile recuperare gli utenti"
+    },
+    "no_users_card": {
+        "title": "Nessun utente trovato :(",
+        "description": "Beh, che sfortuna...",
+        "content": "Forse prova di nuovo?"
+    },
+    "filter": {
+        "title": "Cerchi qualcuno?",
+        "placeholder": "Cerca per nome utente o email",
+        "sort_asc": "Ordina alfabeticamente",
+        "sort_desc": "Ordina in ordine alfabetico inverso"
+    },
+    "pagination": {
+        "previous_btn": "Precedente",
+        "next_btn": "Successivo"
+    },
+    "footer": {
+        "title": "Hai bisogno di supporto o hai in mente un nuovo progetto? Siamo sempre pronti a chiacchierare, contattaci per scoprire come possiamo aiutarti!",
+        "subtitle": "Sviluppato con ❤️ da",
+        "follow_us": "Seguici",
+        "sitemap": "Mappa del sito"
     }
 }

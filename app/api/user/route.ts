@@ -20,7 +20,7 @@ export async function GET() {
   
     await connectMongoDB()
 
-    const user = await User.findById(session?.user.id).select('-password').lean<UserInterface | null>();
+    const user = await User.findById(session.user.id).select('-password').lean<UserInterface | null>();
 
     if (!user) {
       return NextResponse.json(

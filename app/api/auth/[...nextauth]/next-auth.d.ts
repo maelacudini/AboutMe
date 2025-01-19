@@ -8,7 +8,7 @@ export interface SocialsInterface  {
   label: string, 
   url: string,
   tag: string,
-  isDeleted: boolean
+  _id: string
 }
 
 export interface UserInterface {

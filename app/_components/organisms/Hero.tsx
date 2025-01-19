@@ -1,7 +1,7 @@
 import Heading from "../atoms/Heading"
 
 export interface HeroPropsType {
-    title: string
+  title: string
 }
 
 const Hero = (props: HeroPropsType) => {
