@@ -39,12 +39,12 @@ export default async function UserPublic({ params }: {params: Promise<{ slug: st
       <Hero title={t("hero_title",  { name: user.username })} />
       <div className="space-y-8 flex flex-col justify-center items-center text-center">
         <Avatar className="w-48 h-48">
-          <AvatarImage src={user.avatar} />
+          <AvatarImage src={user.avatar} alt="user avatar" height={200} width={200}/>
           <AvatarFallback>{user.username.slice(0,2)}</AvatarFallback>
         </Avatar>
         <div className="space-y-4 max-w-lg">
           <div>
-            <Heading size="text-xl" tag="h4">{user.username}</Heading>
+            <Heading size="text-xl" tag="h2">{user.username}</Heading>
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
           <p>{userBio}</p>

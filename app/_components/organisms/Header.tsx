@@ -34,7 +34,7 @@ const Header = () => {
     <header className="flex justify-center p-4 fixed top-0 left-0 right-0 z-[97]">
       <Menubar>
         <MenubarMenu key='theme'>
-          <MenubarTrigger onClick={() => setTheme(!mounted || theme === 'light' ? 'dark' : 'light')}>
+          <MenubarTrigger aria-label="theme" onClick={() => setTheme(!mounted || theme === 'light' ? 'dark' : 'light')}>
             {(!mounted || theme === 'light') ? <Moon size={ICONS_SIZES.sm} /> : <Sun size={ICONS_SIZES.sm}/>}
           </MenubarTrigger>
         </MenubarMenu>
@@ -71,7 +71,7 @@ const Header = () => {
           </>
         }
         <MenubarMenu key={'lang'}>
-          <MenubarTrigger>
+          <MenubarTrigger aria-label="translate">
             <Languages size={ICONS_SIZES.sm}/>
           </MenubarTrigger>
           <MenubarContent>

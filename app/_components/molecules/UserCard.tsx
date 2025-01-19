@@ -29,7 +29,7 @@ export const UserCard = (props: UserCardPropsType) => {
       <div className="flex items-center gap-2 justify-between">
         <div className="flex gap-2 items-center">
           <Avatar>
-            <AvatarImage src={user.avatar} />
+            <AvatarImage src={user.avatar} alt="user avatar" height={40} width={40}/>
             <AvatarFallback>{user.email.slice(0,1)}</AvatarFallback>
           </Avatar>
           <CardHeader>
@@ -38,7 +38,7 @@ export const UserCard = (props: UserCardPropsType) => {
           </CardHeader>
         </div>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger aria-label="visit user profile">
             <Link href={`/${user.username}`}><SquareArrowOutUpRight size={ICONS_SIZES.sm}/></Link>
           </TooltipTrigger>
           <TooltipContent>

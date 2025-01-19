@@ -84,11 +84,11 @@ const Users = ( props: UsersPropsType ) => {
   return (
     <section className="space-y-4">
       <div className="grid w-full items-center gap-2">
-        <Heading size="text-lg" tag="h3">{t('filter.title')}</Heading>
+        <Heading size="text-2xl" tag="h2">{t('filter.title')}</Heading>
         <div className="flex gap-2">
           <Input onChange={handleFilterChange} value={filter} id="filter" type="text" placeholder={t('filter.placeholder')} />
           <Tooltip>
-            <TooltipTrigger onClick={()=>sortAsc()} className="w-10 flex justify-center items-center">
+            <TooltipTrigger aria-label="sort ascending order" onClick={()=>sortAsc()} className="w-10 flex justify-center items-center">
               <ArrowDownAZ size={ICONS_SIZES.sm}/>
             </TooltipTrigger>
             <TooltipContent>
@@ -96,7 +96,7 @@ const Users = ( props: UsersPropsType ) => {
             </TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger onClick={()=>sortDesc()} className="w-10 flex justify-center items-center">
+            <TooltipTrigger aria-label="sort descending order" onClick={()=>sortDesc()} className="w-10 flex justify-center items-center">
               <ArrowDownZA size={ICONS_SIZES.sm}/>
             </TooltipTrigger>
             <TooltipContent>

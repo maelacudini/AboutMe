@@ -12,8 +12,8 @@ export const Footer = async () => {
     <footer className="w-full max-w-screen-xl space-y-8">
       <div className="grid md:grid-cols-3 gap-4">
         <div className="space-y-4 md:col-span-2">
-          <Heading tag="h5" size="text-2xl">{t('footer.title')}</Heading>
-          <Button variant='default'><ArrowRight size={ICONS_SIZES.sm} />hello.about@gmail.com</Button>
+          <Heading tag="h3" size="text-2xl">{t('footer.title')}</Heading>
+          <Button variant='default' aria-label="hello.about@gmail.com"><ArrowRight size={ICONS_SIZES.sm} />hello.about@gmail.com</Button>
         </div>
         <div className="flex md:justify-end gap-4">
           <Link href='/'>{t('navigation.home')}</Link>

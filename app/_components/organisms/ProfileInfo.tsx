@@ -56,8 +56,8 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
   return (
     <section className="space-y-4">
       <div className="flex justify-center">
-        <Avatar className="w-40 h-40">
-          <AvatarImage src={user.avatar} />
+        <Avatar className="w-48 h-48">
+          <AvatarImage src={user.avatar} alt="user avatar" height={200} width={200}/>
           <AvatarFallback>{user.username.slice(0,2)}</AvatarFallback>
         </Avatar>
       </div>

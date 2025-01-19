@@ -1,7 +1,5 @@
 import { getUserPublic } from "@/utils/api/userPublicApi"
-import {
-  Metadata, ResolvingMetadata 
-} from "next"
+import { Metadata } from "next"
 import { ReactNode } from "react"
  
 type Props = {

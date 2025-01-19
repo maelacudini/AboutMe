@@ -1,6 +1,17 @@
+import { getUsersWithPaginationAndFilter } from '@/utils/api/usersApi'
 import type { MetadataRoute } from 'next'
  
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const usersAndPagination = await getUsersWithPaginationAndFilter()
+  const usersURL: MetadataRoute.Sitemap = usersAndPagination.users.map((user) => {
+    return {
+      url: `https://addwebsite.com/${user}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    }
+  })
+
   return [
     {
       url: 'https://addwebsite.com',
@@ -26,11 +37,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.9,
     },
-    {
-      url: 'https://addwebsite.com/[user]',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
+    ...usersURL
   ]
 }
