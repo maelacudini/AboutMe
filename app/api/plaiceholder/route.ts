@@ -8,13 +8,13 @@ export interface GetImageWithPlaiceholderResponseType {
     src: string;
     height: number;
     width: number;
-  }
-  base64: string
+  };
+  base64: string;
 }
 
 // PUBLIC
 // GET PLAICEHOLDER IMAGE
-export async function GET(req: NextRequest): Promise<GetImageWithPlaiceholderResponseType | NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   const imageUrl = req.nextUrl.searchParams.get("imageUrl");
 
   if (!imageUrl || typeof imageUrl !== "string") {

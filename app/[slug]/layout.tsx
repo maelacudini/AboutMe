@@ -3,8 +3,7 @@ import { Metadata } from "next"
 import { ReactNode } from "react"
  
 type Props = {
-    params: Promise<{ slug: string }>
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: Promise<{ slug: string }>
 }
    
 export async function generateMetadata(

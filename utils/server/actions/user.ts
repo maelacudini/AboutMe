@@ -8,13 +8,13 @@ import xss from "xss";
 import { saltAndHashPassword } from "../functions/auth";
 import { ZodError } from "zod";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import bcrypt from "bcryptjs";
 import { revalidateTag } from "next/cache";
 import {
   SocialsInterface, UserInterface 
 } from "@/app/api/auth/[...nextauth]/next-auth";
 import { redirect } from "next/navigation";
+import { authOptions } from "../authOptions";
 
 // PUBLIC
 // POST, SIGN UP

@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth"
 import { NextResponse } from "next/server"
-import { authOptions } from "../auth/[...nextauth]/route"
 import User from "@/lib/mongo/models/User"
 import connectMongoDB from "@/lib/mongo/DBConnection"
 import { UserInterface } from "../auth/[...nextauth]/next-auth"
+import { authOptions } from "@/utils/server/authOptions"
 
 // PRIVATE
 // GET USER

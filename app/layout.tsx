@@ -1,6 +1,4 @@
 import './_style/globals.css';
-// eslint-disable-next-line import/no-unresolved
-import { GeistSans } from "geist/font/sans";
 import Header from './_components/organisms/Header';
 import type {
   Metadata, Viewport 
@@ -16,6 +14,7 @@ import { Toaster } from './_components/shadcn/sonner';
 import { Footer } from './_components/organisms/Footer';
 import Container from './_components/layouts/Container';
 import { TooltipProvider } from './_components/shadcn/tooltip';
+import { geist } from '@/public/fonts/geist';
 
 export const viewport: Viewport = {
   themeColor: [
@@ -99,7 +98,7 @@ export default async function RootLayout({ children, }: Readonly<{
   return (
     <html lang={locale} suppressHydrationWarning={true}>
       <body
-        className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}
+        className={`${geist.className} antialiased`} suppressHydrationWarning={true}
         id='body'
       >
         <AuthProvider>
