@@ -97,8 +97,8 @@ const Login = () => {
             )}
           />
           <div className="grid grid-cols-2 gap-2 justify-between items-center w-full">
-            <Button disabled={isPending || !form.formState.isValid} type="submit" variant='outline'>{t("buttons.submit")}</Button>
-            <Button disabled={isPending} type="reset" variant='default' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>
+            <Button disabled={isPending} type="reset" variant='outline' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>
+            <Button disabled={isPending || !form.formState.isValid} type="submit" variant='default'>{t("buttons.submit")}</Button>
           </div>
         </form>
       </Form>

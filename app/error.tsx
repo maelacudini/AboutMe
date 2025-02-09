@@ -1,6 +1,7 @@
 'use client'
  
 import { useEffect } from 'react'
+import Heading from './_components/atoms/Heading'
  
 export default function Error({
   error,
@@ -16,8 +17,8 @@ export default function Error({
   }, [error])
  
   return (
-    <div>
-      <h2>Something went wrong!</h2>
+    <section className='flex flex-col gap-2 items-center justify-center'>
+      <Heading tag='h3'>Something went wrong!</Heading>
       <button
         onClick={
           // Attempt to recover by trying to re-render the segment
@@ -26,6 +27,6 @@ export default function Error({
       >
         Try again
       </button>
-    </div>
+    </section>
   )
 }

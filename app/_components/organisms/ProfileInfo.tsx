@@ -136,8 +136,8 @@ export const ProfileInfo = (props: ProfileInfoPropsType) => {
             )}
           />
           <div className="sm:col-span-3 flex justify-end gap-2 w-full">
-            <Button type="submit" disabled={pending || !form.formState.isValid || !form.formState.isDirty} variant='outline'>{t("buttons.submit")}</Button>
-            <Button type="reset" disabled={pending} variant='default' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>            
+            <Button type="reset" disabled={pending} variant='outline' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>            
+            <Button type="submit" disabled={pending || !form.formState.isValid || !form.formState.isDirty} variant='default'>{t("buttons.submit")}</Button>
           </div>
         </form>
       </Form>

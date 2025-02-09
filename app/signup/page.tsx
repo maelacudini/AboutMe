@@ -99,8 +99,8 @@ const Signup = () => {
             )}
           />
           <div className="grid grid-cols-2 gap-2 justify-between items-center w-full">
-            <Button type="submit" disabled={pending || !form.formState.isValid} variant='outline'>{t("buttons.submit")}</Button>
-            <Button type="reset" disabled={pending} variant='default' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>            
+            <Button type="reset" disabled={pending} variant='outline' onClick={()=>form.reset()}>{t("buttons.reset")}</Button>            
+            <Button type="submit" disabled={pending || !form.formState.isValid} variant='default'>{t("buttons.submit")}</Button>
           </div>
         </form>
       </Form>

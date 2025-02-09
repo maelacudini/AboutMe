@@ -35,3 +35,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+Before you start the project:
+- you'll need to set up a MongoDB database and add your URI as MONGODB_URI in a .env file.
+- please generate and add your personal NEXTAUTH_SECRET and NEXTAUTH_URL in a .env file.
