@@ -48,4 +48,5 @@ export const geist = localFont({
         style: 'normal',
       },
     ],
+  preload: false
   })
