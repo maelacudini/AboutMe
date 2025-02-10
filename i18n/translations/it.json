@@ -73,9 +73,9 @@
     },
     "filter": {
         "title": "Cerchi qualcuno?",
-        "placeholder": "Cerca per nome utente o email",
-        "sort_asc": "Ordina alfabeticamente",
-        "sort_desc": "Ordina in ordine alfabetico inverso"
+        "placeholder": "Filtra per nome utente o email",
+        "sort_asc": "Dalla A alla Z",
+        "sort_desc": "Dalla Z alla A"
     },
     "pagination": {
         "previous_btn": "Precedente",

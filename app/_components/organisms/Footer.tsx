@@ -4,9 +4,12 @@ import { Button } from "../shadcn/button"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { ICONS_SIZES } from "@/utils/constants"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/utils/server/authOptions"
 
 export const Footer = async () => {
   const t = await getTranslations()
+  const session = await getServerSession(authOptions)
 
   return (
     <footer className="w-full max-w-screen-xl space-y-8">
@@ -17,8 +20,8 @@ export const Footer = async () => {
         </div>
         <div className="flex md:justify-end gap-4">
           <Link href='/'>{t('navigation.home')}</Link>
-          <Link href='/login'>{t('navigation.login')}</Link>
-          <Link href='/signup'>{t('navigation.signup')}</Link>
+          <Link href={session ? '/profile' : '/login'}>{session ? t('navigation.profile') : t('navigation.login')}</Link>
+          {!session && <Link href='/signup'>{t('navigation.signup')}</Link>}
         </div>
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
@@ -29,19 +32,19 @@ export const Footer = async () => {
           <div className="flex flex-col gap-4">
             <p>{t('footer.sitemap').toUpperCase()}</p>
             <div className="flex flex-col gap-2">
-              <Link href='/'>Home</Link>
-              <Link href='/login'>Login</Link>
-              <Link href='/signup'>Signup</Link>
+              <Link href='/'>{t('navigation.home')}</Link>
+              <Link href={session ? '/profile' : '/login'}>{session ? t('navigation.profile') : t('navigation.login')}</Link>
+              {!session && <Link href='/signup'>{t('navigation.signup')}</Link>}
             </div>
           </div>
           <div className="flex flex-col gap-4">
             <p>{t('footer.follow_us').toUpperCase()}</p>
             <div className="flex flex-col gap-2">
               <Link href='/'>Twitter</Link>
-              <Link href='/login'>Instagram</Link>
-              <Link href='/signup'>Facebook</Link>
-              <Link href='/signup'>Pinterest</Link>
-              <Link href='/signup'>TikTok</Link>
+              <Link href='/'>Instagram</Link>
+              <Link href='/'>Facebook</Link>
+              <Link href='/'>Pinterest</Link>
+              <Link href='/'>TikTok</Link>
             </div>
           </div>
         </div>

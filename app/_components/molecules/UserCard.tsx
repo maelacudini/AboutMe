@@ -27,13 +27,15 @@ export const UserCard = (props: UserCardPropsType) => {
   return (
     <Card>
       <div className="flex items-center gap-2 justify-between">
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center overflow-x-scroll">
           <Avatar>
             <AvatarImage src={user.avatar} alt="user avatar" height={40} width={40}/>
             <AvatarFallback>{user.email.slice(0,1)}</AvatarFallback>
           </Avatar>
           <CardHeader>
-            <CardTitle>{user.username}</CardTitle>
+            <CardTitle>
+              <p>{user.username}</p>
+            </CardTitle>
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </CardHeader>
         </div>
