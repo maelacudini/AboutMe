@@ -16,8 +16,8 @@ import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Heading from "../_components/atoms/Heading"
 import { useTranslations } from "next-intl"
-import { toast } from "sonner"
 import Main from "../_components/layouts/Main"
+import { showToast } from "@/utils/functions"
 
 const Login = () => {
   const t = useTranslations();
@@ -42,15 +42,21 @@ const Login = () => {
           redirect: false
         })
 
-        if (!res?.ok) {
-          toast.error('Please enter valid credentials')
+        if (!res) {
+          showToast(500, t('general_info.could_not', { action: 'log in' }))
+
+          return
+        }
+
+        if (!res.ok) {
+          showToast(res.status, t('general_info.could_not', { action: 'log in' }))
 
           return
         }
         
         route.push('/profile')
       } catch (error) {
-        toast.error('Could not log in')
+        showToast(500, t('general_info.could_not', { action: 'log in' }))
       }
     });
   }

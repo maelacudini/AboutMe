@@ -7,10 +7,11 @@ import React, {
   useMemo, useState 
 } from "react"
 import { Skeleton } from "../shadcn/skeleton"
-import { toast } from "sonner"
 import { Input } from "../shadcn/input"
 import { Button } from "../shadcn/button"
-import { debounce } from "@/utils/functions"
+import {
+  debounce, showToast 
+} from "@/utils/functions"
 import { UsersList } from "./UsersList"
 import Heading from "../atoms/Heading"
 import {
@@ -44,7 +45,7 @@ const Users = ( props: UsersPropsType ) => {
       setPagination(response.pagination);
       setIsLoading(false);
     } catch (error) {
-      toast.error(t('toast.fetch_users_error'));
+      showToast(500, t('general_info.fetch_users_error'))
       setIsLoading(false);
     }
   };

@@ -53,10 +53,18 @@
         "delete_profile_confirm_password": "Confirm your password",
         "delete_profile_confirm_password_placeholder": "Current password",
         "delete_profile_alert_title": "Are you absolutely sure?",
-        "delete_profile_alert_description": "This action cannot be undone. This will permanently delete your account and remove your data from our servers."
+        "delete_profile_alert_description": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+        "share_profile_title": "Spread the news!",
+        "share_profile_description": "Share this url to your friends or add it to your favourite social bio.",
+        "share_profile_cta": "Share ❤️",
+        "share_profile_cta_confirmation": "Url copied!"
     },
-    "toast": {
-        "fetch_users_error": "Could not fetch users"
+    "general_info": {
+        "fetch_users_error": "Could not fetch users",
+        "form_errors": {
+            "invalid_credentials": "Please enter valid credentials"
+        },
+        "could_not": "There has been an error during the {action}"
     },
     "no_users_card": {
         "title": "No users found :(",

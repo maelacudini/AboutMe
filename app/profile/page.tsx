@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { ProfileSocials } from "../_components/organisms/ProfileSocials";
 import { ProfileDelete } from "../_components/organisms/ProfileDelete";
 import Main from "../_components/layouts/Main";
+import { ShareProfile } from "../_components/molecules/ShareProfile";
 
 const Profile = async () => {
   const user = await getUser()  
@@ -25,6 +26,7 @@ const Profile = async () => {
       <ProfileInfo user={user}/>
       <ProfileSocials socials={user.socials}/>
       <ProfileDelete />
+      <ShareProfile username={user.username}/>
     </Main>
   )
 }

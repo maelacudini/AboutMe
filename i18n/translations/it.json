@@ -53,10 +53,18 @@
         "delete_profile_confirm_password": "Conferma la tua password",
         "delete_profile_confirm_password_placeholder": "Password attuale",
         "delete_profile_alert_title": "Sei sicuro al 100%?",
-        "delete_profile_alert_description": "Questa azione è irreversibile. Il tuo account verrà eliminato definitivamente e i tuoi dati rimossi dai nostri server."
+        "delete_profile_alert_description": "Questa azione è irreversibile. Il tuo account verrà eliminato definitivamente e i tuoi dati rimossi dai nostri server.",
+        "share_profile_title": "Spargi la notizia!",
+        "share_profile_description": "Condividi questo link con i tuoi amici o aggiungilo alla bio dei tuoi social preferiti.",
+        "share_profile_cta": "Condividi ❤️",
+        "share_profile_cta_confirmation": "Url copiato!"
     },
-    "toast": {
-        "fetch_users_error": "Non è stato possibile recuperare gli utenti"
+    "general_info": {
+        "fetch_users_error": "Impossibile caricare gli utenti",
+        "form_errors": {
+            "invalid_credentials": "Aggiungere le credenziali corrette"
+        },
+        "could_not": "C'è stato un errore durante il/la {action}"
     },
     "no_users_card": {
         "title": "Nessun utente trovato :(",
