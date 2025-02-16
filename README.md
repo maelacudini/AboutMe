@@ -65,7 +65,7 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-#### Adding a New Language
+### Adding a New Language
 
 To add a new language to the project, follow these steps:
 
@@ -96,7 +96,7 @@ To add a new language to the project, follow these steps:
    };
    ```
 
-##### Folder Organization
+### Folder Organization
 
 1. Components
 The components inside app/_components are organized taking inspiration from the Atomic design:
