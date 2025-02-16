@@ -98,7 +98,7 @@ To add a new language to the project, follow these steps:
 
 ### Folder Organization
 
-1. Components
+#### Components
 The components inside app/_components are organized taking inspiration from the Atomic design:
 - ATOMS: basic HTML elements like form labels, inputs, buttons, and others that can’t be broken down any further without ceasing to be functional.
 - MOLECULES: relatively simple groups of UI elements functioning together as a unit. (e..g. a form label, search input, and button can join together to create a search form molecule). Simple UI molecules should makes testing easier, encourage reusability, and promote consistency throughout the interface.
@@ -106,11 +106,11 @@ The components inside app/_components are organized taking inspiration from the 
 - LAYOUTS: common templates used in one or more components to keep the same design logic everywhere.
 - SHADCN: Shadcn components.
 
-2. API
+#### API
 You can find all apis inside app/api, and the respective functions to use some of them inside utils/api.
 
-3. Server Actions
+#### Server Actions
 This project uses apis as well as server actions, in case of a post request. The server actions can be found inside utils/server/actions.
 
-4. Functions and Constants
+#### Functions and Constants
 All common contants and functions can be found inside utils. The server functions are kept separated in utils/server/functions.
