@@ -112,5 +112,7 @@ You can find all apis inside app/api, and the respective functions to use some o
 #### Server Actions
 This project uses apis as well as server actions, in case of a post request. The server actions can be found inside utils/server/actions.
 
+Server Actions are asynchronous functions that are executed on the server. They can be called in Server and Client Components to handle form submissions and data mutations in Next.js applications. Server Actions are not limited to <form> and can be invoked from event handlers, useEffect, third-party libraries, and other form elements like <button>. Server Actions integrate with the Next.js caching and revalidation architecture. When an action is invoked, Next.js can return both the updated UI and new data in a single server roundtrip. Behind the scenes, actions use the POST method, and only this HTTP method can invoke them.
+
 #### Functions and Constants
 All common contants and functions can be found inside utils. The server functions are kept separated in utils/server/functions.
