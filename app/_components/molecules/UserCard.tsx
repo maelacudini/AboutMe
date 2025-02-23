@@ -41,7 +41,7 @@ export const UserCard = (props: UserCardPropsType) => {
         </div>
         <Tooltip>
           <TooltipTrigger aria-label="visit user profile">
-            <Link href={`/${user.username}`}><SquareArrowOutUpRight size={ICONS_SIZES.sm}/></Link>
+            <Link href={`/${user.username}`} aria-label="visit user profile"><SquareArrowOutUpRight size={ICONS_SIZES.sm}/></Link>
           </TooltipTrigger>
           <TooltipContent>
             <p>{t('user_visit_profile',{ username: user.username })}</p>

@@ -86,7 +86,7 @@ const Users = ( props: UsersPropsType ) => {
       <div className="grid w-full items-center gap-2">
         <Heading size="text-2xl" tag="h2">{t('filter.title')}</Heading>
         <div className="flex gap-2">
-          <Input onChange={handleFilterChange} value={filter} id="filter" type="text" placeholder={t('filter.placeholder')} />
+          <Input aria-label="user filter" onChange={handleFilterChange} value={filter} id="filter" type="text" placeholder={t('filter.placeholder')} />
           <Tooltip>
             <TooltipTrigger aria-label="sort ascending order" onClick={()=>sortAsc()} className="w-10 flex justify-center items-center">
               <ArrowDownAZ size={ICONS_SIZES.sm}/>

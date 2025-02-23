@@ -8,11 +8,25 @@ import {
 import { Button } from "../shadcn/button"
 import { useTranslations } from "next-intl"
 import { showToast } from "@/utils/functions"
+import {
+  useEffect, useState 
+} from "react"
 
 export const ShareProfile = ({ username }:{username: string}) => {
   const t = useTranslations();
-  const baseUrl = window.location.origin
-  const url = baseUrl! + '/' + username
+  const [baseUrl, setBaseUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setBaseUrl(window.location.origin);
+    }
+  }, []);
+
+  if (!baseUrl) {
+    return null;
+  }
+
+  const url = baseUrl + '/' + username
 
   return (
     <Dialog>

@@ -34,7 +34,7 @@ const EditSocial = (props: SocialPropsType) => {
       <div className="flex items-center justify-between gap-4">
         <Label htmlFor={`url_${social.label}`}>{social.label}</Label>
         <AlertDialog>
-          <AlertDialogTrigger><Trash className="text-destructive" size={ICONS_SIZES.sm}/></AlertDialogTrigger>
+          <AlertDialogTrigger aria-label="delete social"><Trash className="text-destructive" size={ICONS_SIZES.sm}/></AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>{t('profile.delete_social_title')}</AlertDialogTitle>
@@ -48,6 +48,7 @@ const EditSocial = (props: SocialPropsType) => {
         </AlertDialog>
       </div>
       <Input 
+        aria-label="username"
         type="text" 
         placeholder="e.g. your_twitter_username" 
         min={1} 
@@ -57,6 +58,7 @@ const EditSocial = (props: SocialPropsType) => {
         onChange={(e) => handleOnChange(e, social.tag)}
       />
       <Input 
+        aria-label="url"
         type="url"
         placeholder="e.g. https://twitter.com" 
         min={1}
