@@ -1,5 +1,4 @@
 'use client'
-
 import {
   getUsersWithPaginationAndFilter, GetUsersWithPaginationAndFilterResponseType 
 } from "@/utils/api/usersApi"
@@ -20,7 +19,7 @@ import {
 import {
   Tooltip, TooltipContent, TooltipTrigger 
 } from "../shadcn/tooltip";
-import { useTranslations } from "next-intl"
+import { useTranslations } from 'next-intl';
 import { ICONS_SIZES } from "@/utils/constants"
 
 export type UsersPropsType = {
@@ -29,12 +28,12 @@ export type UsersPropsType = {
 
 const Users = ( props: UsersPropsType ) => {
   const { usersAndPagination } = props
-  const t = useTranslations();  
   const [users, setUsers] = useState<GetUsersWithPaginationAndFilterResponseType['users']>(usersAndPagination.users)
   const [pagination, setPagination] = useState<GetUsersWithPaginationAndFilterResponseType['pagination']>(usersAndPagination.pagination)
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filter, setFilter] = useState('')
   const totalPages = Math.ceil(pagination.totalUsers / 10);
+  const t = useTranslations();
 
   const fetchUsers = async (page?: number, filter?: string, sort?: "asc" | "desc") => {
     setIsLoading(true);
