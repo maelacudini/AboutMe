@@ -19,6 +19,7 @@ To get started with the project, follow these steps:
   - `MONGODB_URI` (MongoDB connection URI)
   - `NEXTAUTH_SECRET` (NextAuth secret key)
   - `NEXTAUTH_URL` (NextAuth URL)
+  - `ARCJET_KEY` (Sign up to Arcjet and generate your ARCJET_KEY in sdk-configuration)
 
 ### Installation
 
