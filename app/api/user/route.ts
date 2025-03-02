@@ -1,13 +1,22 @@
 import { getServerSession } from "next-auth"
-import { NextResponse } from "next/server"
+import {
+  NextRequest, NextResponse 
+} from "next/server"
 import User from "@/lib/mongo/models/User"
 import connectMongoDB from "@/lib/mongo/DBConnection"
 import { UserInterface } from "../auth/[...nextauth]/next-auth"
 import { authOptions } from "@/lib/nextAuth/AuthOptions"
+import { genericValidationAj } from "@/lib/arcjet/ArcjetRules"
 
 // PRIVATE
 // GET USER
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const decision = await genericValidationAj.protect(req);
+
+  if (decision.isDenied()) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  
   try {
     const session = await getServerSession(authOptions)    
     

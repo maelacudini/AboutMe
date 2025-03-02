@@ -5,10 +5,17 @@ import User from "@/lib/mongo/models/User"
 import connectMongoDB from "@/lib/mongo/DBConnection"
 import xss from "xss"
 import { CleanUserType } from "@/utils/api/usersApi"
+import { genericValidationAj } from "@/lib/arcjet/ArcjetRules"
 
 // PUBLIC
 // GET USER
 export async function GET(req: NextRequest) {
+  const decision = await genericValidationAj.protect(req);
+    
+  if (decision.isDenied()) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  
   try {
     const username = req.nextUrl.searchParams.get("username");    
 

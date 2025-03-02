@@ -6,10 +6,16 @@ import connectMongoDB from "@/lib/mongo/DBConnection";
 import User from "@/lib/mongo/models/User";
 import { PAGINATIOIN_LIMIT } from "@/utils/constants";
 import xss from "xss";
+import { genericValidationAj } from "@/lib/arcjet/ArcjetRules";
 
 // PUBLIC
 // GET ALL USERS
 export async function GET(req: NextRequest) {
+  const decision = await genericValidationAj.protect(req);
+    
+  if (decision.isDenied()) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   
   try {
     const filter = req.nextUrl.searchParams.get("filter") || '';
