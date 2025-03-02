@@ -8,6 +8,7 @@ const UserSchema = new Schema<UserInterface>(
   {
     email: {
       type: String,
+      unique: true,
       required: true,
     },
     password: {
@@ -16,6 +17,7 @@ const UserSchema = new Schema<UserInterface>(
     },
     username: {
       type: String,
+      unique: true,
       required: true,
     },
     bio: {
@@ -34,7 +36,6 @@ const UserSchema = new Schema<UserInterface>(
         },
         label: {
           type: String,
-          unique: true,
           required: true,
         },
         url: {

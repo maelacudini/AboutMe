@@ -2,7 +2,9 @@
 import connectMongoDB from "@/lib/mongo/DBConnection";
 import User from "@/lib/mongo/models/User";
 import {
-  signUpSchema, socialSchema, updatePasswordSchema 
+  deleteUserSchema,
+  signUpSchema, socialSchema, updatePasswordSchema, 
+  updateUserDataSchema
 } from "@/lib/zod/ValidationSchemas";
 import xss from "xss";
 import { saltAndHashPassword } from "../functions/auth";
@@ -14,25 +16,40 @@ import {
   SocialsInterface, UserInterface 
 } from "@/app/api/auth/[...nextauth]/next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../authOptions";
+import { request } from "@arcjet/next";
+import {
+  genericValidationAj, 
+  emailValidationAj
+} from "../../../lib/arcjet/ArcjetRules";
+import { authOptions } from "@/lib/nextAuth/AuthOptions";
 
 // PUBLIC
 // POST, SIGN UP
 export async function createUser(prevState: any, formData: FormData) {
-  try {
-    const rawFormData = {
-      email: formData.get('email'),
-      username: formData.get('username'),
-      password: formData.get('password'),
-    }
-  
-    const { email, username, password } = rawFormData  
-  
-    await signUpSchema.parseAsync(rawFormData)
+  if (!(formData instanceof FormData)) {
+    return { status: 400, message: 'Incorrect formData', timestamp: Date.now() };
+  }
 
-    const sanitizedPassword = xss(password!.toString())
-    const sanitizedEmail = xss(email!.toString())
-    const sanitizedUsername = xss(username!.toString())
+  const req = await request()
+  const decision = await genericValidationAj.protect(req)
+
+  if (decision.isDenied()) {
+    return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
+  }
+
+  try {
+    const formDataObject = Object.fromEntries(formData.entries())
+    const parsedFormDataObject = await signUpSchema.parseAsync(formDataObject)
+
+    const sanitizedPassword = xss(parsedFormDataObject.password)
+    const sanitizedEmail = xss(parsedFormDataObject.email)
+    const sanitizedUsername = xss(parsedFormDataObject.username)
+
+    const decision = await emailValidationAj.protect(req, { email: sanitizedEmail })
+
+    if (decision.isDenied()) {
+      return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
+    }
 
     await connectMongoDB()
 
@@ -61,7 +78,7 @@ export async function createUser(prevState: any, formData: FormData) {
   } catch (error) {
     if (error instanceof ZodError) {
       return { status: 400, message: error.message, timestamp: Date.now() };
-    }
+    }    
      
     return { status: 500, message: 'Could not signup', timestamp: Date.now() };
   } 
@@ -73,6 +90,17 @@ export async function createUser(prevState: any, formData: FormData) {
 // PRIVATE
 // POST, UPDATE USER PASSWORD
 export async function updateUserPassword(prevState: any, formData: FormData) {
+  if (!(formData instanceof FormData)) {
+    return { status: 400, message: 'Incorrect formData', timestamp: Date.now() };
+  }
+
+  const req = await request()
+  const decision = await genericValidationAj.protect(req)
+  
+  if (decision.isDenied()) {
+    return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
+  }
+
   try {
     const session = await getServerSession(authOptions)
   
@@ -80,17 +108,11 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
       return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
     }
 
-    const rawFormData = {
-      currentPassword: formData.get('currentPassword'),
-      newPassword: formData.get('newPassword'),
-    }
-  
-    const { currentPassword, newPassword } = rawFormData
+    const formDataObject = Object.fromEntries(formData.entries())
+    const parsedFormDataObject = await updatePasswordSchema.parseAsync(formDataObject)
 
-    await updatePasswordSchema.parseAsync(rawFormData)
-  
-    const sanitizedCurrentPassword = xss(currentPassword!.toString())
-    const sanitizedNewPassword = xss(newPassword!.toString())
+    const sanitizedCurrentPassword = xss(parsedFormDataObject.currentPassword)
+    const sanitizedNewPassword = xss(parsedFormDataObject.newPassword)
 
     await connectMongoDB()
     
@@ -98,6 +120,10 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
 
     if (!user) {
       return { status: 404, message: 'No user found', timestamp: Date.now() };
+    }
+
+    if (user._id.toString() !== session.user.id) {      
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() };
     }
 
     const match = await bcrypt.compare(sanitizedCurrentPassword, user.password);
@@ -122,8 +148,26 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
 
 // PRIVATE
 // POST, UPDATE USER GENERAL DATA
+type SanitizedData = {
+  email: string;
+  username: string;
+  bio?: string | null;
+  avatar?: string | null;
+}
+
 // eslint-disable-next-line complexity
 export async function updateUserData(prevState: any, formData: FormData) {
+  if (!(formData instanceof FormData)) {
+    return { status: 400, message: 'Incorrect formData', timestamp: Date.now() };
+  }
+
+  const req = await request()  
+  const decision = await genericValidationAj.protect(req)
+
+  if (decision.isDenied()) {
+    return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
+  }
+
   try {
     const session = await getServerSession(authOptions)
   
@@ -131,32 +175,36 @@ export async function updateUserData(prevState: any, formData: FormData) {
       return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
     }
 
-    const rawFormData = {
-      email: formData.get('email'),
-      username: formData.get('username'),
-      bio: formData.get('bio'),
-      avatar: formData.get('avatar'),
-    }
-  
-    const { email, username, bio, avatar } = rawFormData  
+    const formDataObject = Object.fromEntries(formData.entries())
+    const parsedFormDataObject = await updateUserDataSchema.parseAsync(formDataObject)
+    
+    const decision = await emailValidationAj.protect(req, { email: parsedFormDataObject.email })
 
-    const sanitizedData: Record<string, string> = {};
-
-    if (email) {sanitizedData.email = xss(email.toString());}
-    if (username) {sanitizedData.username = xss(username.toString());}
-    if (bio) {
-      sanitizedData.bio = xss(bio.toString())
-    } else {
-      sanitizedData.bio = ''
+    if (decision.isDenied()) {
+      return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
     }
-    if (avatar) {
-      sanitizedData.avatar = xss(avatar.toString())
-    } else {
-      sanitizedData.avatar = ''
-    }    
 
     await connectMongoDB()
 
+    // Check if the user exists and if the user trying to edit data is the user that owns that data
+    const user = await User.findById(session.user.id).lean<UserInterface | null>();
+
+    if (!user) {
+      return { status: 404, message: 'No user found', timestamp: Date.now() };
+    }
+
+    if (user._id.toString() !== session.user.id) {      
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() };
+    }
+    
+    const sanitizedData: SanitizedData = {
+      email: parsedFormDataObject.email ? xss(parsedFormDataObject.email) : user.email,
+      username: parsedFormDataObject.username ? xss(parsedFormDataObject.username) : user.username,
+      avatar: parsedFormDataObject.avatar || parsedFormDataObject.avatar === '' ? (parsedFormDataObject.avatar === '' ? null : xss(parsedFormDataObject.avatar)) : user.avatar,
+      bio: parsedFormDataObject.bio || parsedFormDataObject.bio === '' ? xss(parsedFormDataObject.bio) : user.bio
+    };
+
+    // Check if the entered username and/or email are already taken, those are unique values
     // Exclude the current user from the query by adding the `user.id` to the condition
     const existingUser = await User.findOne({
       $or: [
@@ -165,7 +213,7 @@ export async function updateUserData(prevState: any, formData: FormData) {
       ],
       _id: { $ne: session.user.id }
     });
-   
+  
     if (existingUser) {
       if (existingUser.email === sanitizedData.email) {
         return { status: 409, message: 'User already exists', timestamp: Date.now() };
@@ -174,15 +222,11 @@ export async function updateUserData(prevState: any, formData: FormData) {
       }
     }
     
-    const updatedUser = await User.findByIdAndUpdate(
-      session.user.id,
-      sanitizedData,
-      { new: true }
+    // If the user exists and if the user trying to edit the data owns the data and if the email/username are not already taken, you can update the user data
+    await User.updateOne(
+      {  _id: session.user.id },
+      { $set: sanitizedData }
     );
-
-    if (!updatedUser) {
-      return { status: 404, message: 'User not found', timestamp: Date.now() };
-    }
   } catch (error) {
     return { status: 500, message: 'Could not update field', timestamp: Date.now() } 
   } 
@@ -190,12 +234,23 @@ export async function updateUserData(prevState: any, formData: FormData) {
   revalidateTag('getUser')
   revalidateTag('getUsersWithPaginationAndFilter')
 
-  return { status: 200, message: 'user updated', timestamp: Date.now() }
+  return { status: 200, message: 'User updated', timestamp: Date.now() }
 }
 
 // PRIVATE
 // POST, UPDATE CURRENT USER SOCIALS
 export async function updateUserSocials(prevState: any, formData: FormData) {
+  if (!(formData instanceof FormData)) {
+    return { status: 400, message: 'Incorrect formData', timestamp: Date.now() };
+  }
+
+  const req = await request()  
+  const decision = await genericValidationAj.protect(req)
+
+  if (decision.isDenied()) {
+    return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
+  }
+  
   try {
     const session = await getServerSession(authOptions)
   
@@ -208,6 +263,10 @@ export async function updateUserSocials(prevState: any, formData: FormData) {
 
     if (!user) {
       return { status: 404, message: 'User not found', timestamp: Date.now() };
+    }
+
+    if (user._id.toString() !== session.user.id) {      
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() };
     }
 
     user.socials = user.socials.map((social: SocialsInterface) => ({
@@ -233,7 +292,14 @@ export async function updateUserSocials(prevState: any, formData: FormData) {
 
 // PRIVATE
 // DELETE SOCIAL
-export async function deleteSocial(label: string) {
+export async function deleteSocial(label: string) {  
+  const req = await request()  
+  const decision = await genericValidationAj.protect(req)
+
+  if (decision.isDenied()) {        
+    return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
+  }
+  
   try {
     const session = await getServerSession(authOptions)    
     
@@ -244,7 +310,8 @@ export async function deleteSocial(label: string) {
     if (!label) {
       return { status: 404, message: 'Please pass a label', timestamp: Date.now() };
     }
-    const sanitizedLabel = xss(label.toString())
+    
+    const sanitizedLabel = xss(label)    
   
     await connectMongoDB()
 
@@ -252,6 +319,10 @@ export async function deleteSocial(label: string) {
 
     if (!user) {
       return { status: 404, message: 'User not found', timestamp: Date.now() };
+    }
+
+    if (user._id.toString() !== session.user.id) {      
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() };
     }
 
     const socialIndex = user.socials.findIndex(
@@ -282,6 +353,17 @@ export async function deleteSocial(label: string) {
 // PRIVATE
 // POST, CREATE USER SOCIALS
 export async function createSocial(prevState: any, formData: FormData) {
+  if (!(formData instanceof FormData)) {
+    return { status: 400, message: 'Incorrect formData', timestamp: Date.now() };
+  }
+  
+  const req = await request()
+  const decision = await genericValidationAj.protect(req)
+  
+  if (decision.isDenied()) {
+    return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
+  }
+
   try {
     const session = await getServerSession(authOptions)
   
@@ -289,24 +371,23 @@ export async function createSocial(prevState: any, formData: FormData) {
       return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
     }
 
-    const rawFormData = {
-      label: formData.get('label'),
-      tag: formData.get('tag'),
-      url: formData.get('url'),
-    }
+    const formDataObject = Object.fromEntries(formData.entries())
+    const parsedFormDataObject = await socialSchema.parseAsync(formDataObject)
 
-    const { label, tag, url } = rawFormData
+    const sanitizedLabel = xss(parsedFormDataObject.label)
+    const sanitizedTag = xss(parsedFormDataObject.tag)
+    const sanitizedUrl = xss(parsedFormDataObject.url)
 
-    await socialSchema.parseAsync(rawFormData)
-
-    const sanitizedLabel = xss(label!.toString())
-    const sanitizedTag = xss(tag!.toString())
-    const sanitizedUrl = xss(url!.toString())
+    await connectMongoDB()
     
     const user = await User.findById(session.user.id)
 
     if (!user) {
       return { status: 404, message: 'User not found', timestamp: Date.now() };
+    }
+    
+    if (user._id.toString() !== session.user.id) {      
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() };
     }
 
     const existingSocial = user.socials.find(
@@ -340,6 +421,17 @@ export async function createSocial(prevState: any, formData: FormData) {
 // PRIVATE
 // DELETE USER
 export async function deleteUser(prevState: any, formData: FormData) {
+  if (!(formData instanceof FormData)) {
+    return { status: 400, message: 'Incorrect formData', timestamp: Date.now() };
+  }
+
+  const req = await request()
+  const decision = await genericValidationAj.protect(req)
+  
+  if (decision.isDenied()) {
+    return { status: 400, message: `Denied: ` + decision.reason.type, timestamp: Date.now() };
+  }
+  
   try {
     const session = await getServerSession(authOptions)    
     
@@ -347,12 +439,10 @@ export async function deleteUser(prevState: any, formData: FormData) {
       return { status: 401, message: 'Unauthorized', timestamp: Date.now() }
     }
 
-    const password = formData.get('password')
+    const formDataObject = Object.fromEntries(formData.entries())
+    const parsedFormDataObject = await deleteUserSchema.parseAsync(formDataObject)
 
-    if (!password) {
-      return { status: 404, message: 'No password received', timestamp: Date.now() };
-    }
-    const sanitizedPassword = xss(password.toString())
+    const sanitizedPassword = xss(parsedFormDataObject.password)
   
     await connectMongoDB()
 
@@ -360,6 +450,10 @@ export async function deleteUser(prevState: any, formData: FormData) {
 
     if (!user) {
       return { status: 404, message: 'User not found', timestamp: Date.now() };
+    }
+
+    if (user._id.toString() !== session.user.id) {      
+      return { status: 401, message: 'Unauthorized', timestamp: Date.now() };
     }
 
     const match = await bcrypt.compare(sanitizedPassword, user.password);

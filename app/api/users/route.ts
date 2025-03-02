@@ -1,13 +1,16 @@
 import {
-  NextResponse, NextRequest 
+  NextRequest,
+  NextResponse 
 } from "next/server";
 import connectMongoDB from "@/lib/mongo/DBConnection";
 import User from "@/lib/mongo/models/User";
 import { PAGINATIOIN_LIMIT } from "@/utils/constants";
+import xss from "xss";
 
 // PUBLIC
-// GET ALL USERS, http://localhost:3000/api/users?page=1&filter=
+// GET ALL USERS
 export async function GET(req: NextRequest) {
+  
   try {
     const filter = req.nextUrl.searchParams.get("filter") || '';
     const sortParam = req.nextUrl.searchParams.get("sort") || 'asc';
@@ -21,12 +24,14 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const sanitizedFilter = xss(filter)
+    
     await connectMongoDB()    
 
-    const query = filter ? { 
+    const query = sanitizedFilter ? {
       $or: [
-        { username: { $regex: filter, $options: 'i' } },
-        { email: { $regex: filter, $options: 'i' } }
+        { username: { $regex: sanitizedFilter, $options: 'i' } },
+        { email: { $regex: sanitizedFilter, $options: 'i' } }
       ]
     } : {};
     const sortOrder = sortParam === 'desc' ? -1 : 1;

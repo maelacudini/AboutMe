@@ -1,7 +1,8 @@
 import {
   array,
   literal,
-  object, string 
+  object, 
+  string 
 } from "zod"
  
 export const logInSchema = object({
@@ -39,6 +40,11 @@ export const updatePasswordSchema = object({
     ),
 })
 
+export const deleteUserSchema = object({
+  password: string({ required_error: "Current password is required" })
+    .min(1, "Current password is required")
+})
+
 export const updateUserDataSchema = object({
   email: string({ required_error: "Email is required" })
     .email("Invalid email")
@@ -48,12 +54,14 @@ export const updateUserDataSchema = object({
     .min(1)
     .max(50),
   bio: string()
+    .trim()
     .max(400)
     .optional(),
   avatar: string()
+    .trim()
     .url("Invalid url")
     .or(literal("")) 
-    .optional(),
+    .optional()
 })
 
 export const socialSchema = object({
@@ -66,8 +74,7 @@ export const socialSchema = object({
   url: string({ required_error: "Url is required" })
     .min(1, "Url is required")
     .max(50)
-    .url(),
-  _id: string().optional()
+    .url()
 })
 
 export const socialsArraySchema = object({ socials: array(socialSchema), });

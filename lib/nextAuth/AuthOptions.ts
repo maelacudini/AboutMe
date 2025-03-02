@@ -39,13 +39,13 @@ export const authOptions: AuthOptions = {
                     
           if (!match) {
             return null
-          }          
+          }
                               
           return user
         } catch (error) {
           if (error instanceof ZodError) {
             return null
-          }          
+          }
           throw new Error("Authentication failed. Please try again.");
         }
       }

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { ICONS_SIZES } from "@/utils/constants"
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/utils/server/authOptions"
+import { authOptions } from "@/lib/nextAuth/AuthOptions"
 
 export const Footer = async () => {
   const t = await getTranslations()

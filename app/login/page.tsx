@@ -42,14 +42,8 @@ const Login = () => {
           redirect: false
         })
 
-        if (!res) {
-          showToast(500, t('general_info.could_not', { action: 'log in' }))
-
-          return
-        }
-
-        if (!res.ok) {
-          showToast(res.status, t('general_info.could_not', { action: 'log in' }))
+        if (!res || !res.ok) {
+          showToast(res ? res.status : 500, t('general_info.could_not', { action: 'log in' }))
 
           return
         }

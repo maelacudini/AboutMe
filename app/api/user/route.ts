@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import User from "@/lib/mongo/models/User"
 import connectMongoDB from "@/lib/mongo/DBConnection"
 import { UserInterface } from "../auth/[...nextauth]/next-auth"
-import { authOptions } from "@/utils/server/authOptions"
+import { authOptions } from "@/lib/nextAuth/AuthOptions"
 
 // PRIVATE
 // GET USER
